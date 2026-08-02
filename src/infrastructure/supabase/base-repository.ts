@@ -16,7 +16,7 @@ export abstract class SupabaseBaseRepository<T, ID = string>
 
   async findById(id: ID): Promise<T | null> {
     const { data, error } = await supabase
-      .from(this.tableName)
+      .from(this.tableName as any)
       .select("*")
       .eq("id", id as string)
       .maybeSingle();
@@ -26,7 +26,7 @@ export abstract class SupabaseBaseRepository<T, ID = string>
   }
 
   async findAll(filters?: Record<string, unknown>): Promise<T[]> {
-    let query = supabase.from(this.tableName).select("*");
+    let query = supabase.from(this.tableName as any).select("*");
 
     if (filters) {
       for (const [column, value] of Object.entries(filters)) {
@@ -41,7 +41,7 @@ export abstract class SupabaseBaseRepository<T, ID = string>
 
   async create(entity: Omit<T, "id" | "createdAt" | "updatedAt">): Promise<T> {
     const { data, error } = await supabase
-      .from(this.tableName)
+      .from(this.tableName as any)
       .insert(entity as Record<string, unknown>)
       .select("*")
       .single();
@@ -53,7 +53,7 @@ export abstract class SupabaseBaseRepository<T, ID = string>
 
   async update(id: ID, changes: Partial<T>): Promise<T | null> {
     const { data, error } = await supabase
-      .from(this.tableName)
+      .from(this.tableName as any)
       .update(changes as Record<string, unknown>)
       .eq("id", id as string)
       .select("*")
@@ -64,7 +64,10 @@ export abstract class SupabaseBaseRepository<T, ID = string>
   }
 
   async remove(id: ID): Promise<void> {
-    const { error } = await supabase.from(this.tableName).delete().eq("id", id as string);
+    const { error } = await supabase
+      .from(this.tableName as any)
+      .delete()
+      .eq("id", id as string);
 
     if (error) throw error;
   }
