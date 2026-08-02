@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 
+import { ThemeToggle } from "../shared/ThemeToggle";
+
 const modules: Array<{
   label: string;
   to?: "/" | "/perfilamento" | "/alocacao" | "/carteira" | "/analise";
@@ -38,7 +40,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <svg className="size-9" viewBox="0 0 40 40" fill="none">
                 <path
                   d="M8 32L20 8L32 32"
-                  stroke="white"
+                  stroke="currentColor"
                   strokeWidth="3"
                   strokeLinejoin="round"
                 />
@@ -113,6 +115,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               </h1>
             </div>
             <div className="flex items-center gap-4">
+              <ThemeToggle />
               <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
                 Estrutura inicial
               </span>
