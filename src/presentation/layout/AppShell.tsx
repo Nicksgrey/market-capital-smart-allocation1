@@ -1,12 +1,15 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 
-const modules: Array<{ label: string; to?: "/" | "/perfilamento" }> = [
+const modules: Array<{
+  label: string;
+  to?: "/" | "/perfilamento" | "/alocacao";
+}> = [
   { label: "Visão Geral", to: "/" },
   { label: "Perfil do Investidor", to: "/perfilamento" },
+  { label: "Inteligência de Alocação", to: "/alocacao" },
   { label: "Classes de Ativos" },
   { label: "Carteiras Modelo" },
-  { label: "Alocação Sugerida" },
   { label: "Rebalanceamento" },
 ];
 
