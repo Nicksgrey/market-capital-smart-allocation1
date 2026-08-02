@@ -13,7 +13,22 @@ const modules: Array<{
   { label: "Rebalanceamento" },
 ];
 
+function useModuleTitle() {
+  const { pathname } = useLocation();
+  const titles: Record<string, string> = {
+    "/": "Visão Geral do Patrimônio",
+    "/perfilamento": "Perfilamento do Investidor",
+    "/alocacao": "Inteligência de Alocação",
+    "/carteira": "Carteira Estratégica",
+    "/analise": "Inteligência Pós-Alocação",
+  };
+  return titles[pathname] ?? "Motor Inteligente de Alocação Patrimonial";
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
+  const title = useModuleTitle();
+  const isOverview = useLocation().pathname === "/";
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex max-w-7xl gap-0 px-0 py-0 lg:gap-8 lg:px-6 lg:py-8">
