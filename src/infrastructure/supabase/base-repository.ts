@@ -1,4 +1,4 @@
-import { supabase, type Database } from "./client";
+import { supabase } from "./client";
 import type { Repository } from "@/domain/repositories/repository";
 
 /**
@@ -6,15 +6,17 @@ import type { Repository } from "@/domain/repositories/repository";
  *
  * As políticas RLS do projeto existente continuam sendo respeitadas
  * porque o cliente mantém a sessão do usuário autenticado.
+ *
+ * As subclasses devem informar o nome da tabela e tipar suas entidades.
  */
 export abstract class SupabaseBaseRepository<T, ID = string>
   implements Repository<T, ID>
 {
-  protected abstract tableName: keyof Database["public"]["Tables"];
+  protected abstract tableName: string;
 
   async findById(id: ID): Promise<T | null> {
     const { data, error } = await supabase
-      .from(this.tableName as string)
+      .from(this.tableName)
       .select("*")
       .eq("id", id as string)
       .maybeSingle();
@@ -24,7 +26,7 @@ export abstract class SupabaseBaseRepository<T, ID = string>
   }
 
   async findAll(filters?: Record<string, unknown>): Promise<T[]> {
-    let query = supabase.from(this.tableName as string).select("*");
+    let query = supabase.from(this.tableName).select("*");
 
     if (filters) {
       for (const [column, value] of Object.entries(filters)) {
@@ -39,7 +41,7 @@ export abstract class SupabaseBaseRepository<T, ID = string>
 
   async create(entity: Omit<T, "id" | "createdAt" | "updatedAt">): Promise<T> {
     const { data, error } = await supabase
-      .from(this.tableName as string)
+      .from(this.tableName)
       .insert(entity as Record<string, unknown>)
       .select("*")
       .single();
@@ -51,7 +53,7 @@ export abstract class SupabaseBaseRepository<T, ID = string>
 
   async update(id: ID, changes: Partial<T>): Promise<T | null> {
     const { data, error } = await supabase
-      .from(this.tableName as string)
+      .from(this.tableName)
       .update(changes as Record<string, unknown>)
       .eq("id", id as string)
       .select("*")
@@ -62,10 +64,7 @@ export abstract class SupabaseBaseRepository<T, ID = string>
   }
 
   async remove(id: ID): Promise<void> {
-    const { error } = await supabase
-      .from(this.tableName as string)
-      .delete()
-      .eq("id", id as string);
+    const { error } = await supabase.from(this.tableName).delete().eq("id", id as string);
 
     if (error) throw error;
   }
