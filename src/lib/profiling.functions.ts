@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
@@ -7,35 +6,7 @@ import {
   toPersistence,
 } from "@/infrastructure/profiling/investor-profile.mapper";
 import { consolidateInvestorProfile } from "@/application/profiling/use-cases/consolidate-investor-profile";
-
-const discoverySchema = z.object({
-  age: z.number().int().min(0).max(120).nullable(),
-  netWorth: z.number().min(0).nullable(),
-  monthlyIncome: z.number().min(0).nullable(),
-  monthlyExpenses: z.number().min(0).nullable(),
-  emergencyReserve: z
-    .enum(["nenhuma", "abaixo_6_meses", "entre_6_e_12_meses", "acima_12_meses"])
-    .nullable(),
-  isRetired: z.boolean(),
-  dependents: z.number().int().min(0).max(20),
-  horizonYears: z.number().int().min(0).max(80).nullable(),
-  mainGoal: z
-    .enum([
-      "compra_imovel",
-      "reserva_seguranca",
-      "geracao_renda",
-      "crescimento_patrimonial",
-      "aposentadoria",
-    ])
-    .nullable(),
-  liquidityNeed: z.enum(["alta", "media", "baixa"]).nullable(),
-});
-
-const profilingInputSchema = z.object({
-  behavioralScore: z.number().min(0).max(100),
-  discovery: discoverySchema,
-  selectedVolatility: z.number().min(0).max(30).optional(),
-});
+import { profilingInputSchema } from "@/application/profiling/validation";
 
 /** Perfilamento mais recente do usuário autenticado (Camada 1). */
 export const getMyInvestorProfile = createServerFn({ method: "GET" })
@@ -62,7 +33,13 @@ export const saveInvestorProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => profilingInputSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const consolidation = consolidateInvestorProfile(data);
+    const consolidation = consolidateInvestorProfile({
+      behavioralScore: data.behavioralScore,
+      discovery: data.discovery,
+      ...(data.selectedVolatility != null
+        ? { selectedVolatility: data.selectedVolatility }
+        : {}),
+    });
     const payload = toPersistence(context.userId, consolidation);
 
     const { data: existing, error: findError } = await context.supabase
@@ -109,7 +86,7 @@ export const saveInvestorProfile = createServerFn({ method: "POST" })
         final_profile: consolidation.riskBudget.finalProfile,
         recommended_volatility: consolidation.volatility.recommended,
         selected_volatility: consolidation.volatility.selected,
-        payload: consolidation as unknown as Record<string, unknown>,
+        payload: JSON.parse(JSON.stringify(consolidation)),
       });
 
     if (snapshotError) throw new Error(snapshotError.message);
