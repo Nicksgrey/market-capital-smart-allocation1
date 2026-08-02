@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 
 const modules: Array<{
   label: string;
@@ -13,57 +13,114 @@ const modules: Array<{
   { label: "Rebalanceamento" },
 ];
 
+function useModuleTitle() {
+  const { pathname } = useLocation();
+  const titles: Record<string, string> = {
+    "/": "Visão Geral do Patrimônio",
+    "/perfilamento": "Perfilamento do Investidor",
+    "/alocacao": "Inteligência de Alocação",
+    "/carteira": "Carteira Estratégica",
+    "/analise": "Inteligência Pós-Alocação",
+  };
+  return titles[pathname] ?? "Motor Inteligente de Alocação Patrimonial";
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
+  const title = useModuleTitle();
+  const isOverview = useLocation().pathname === "/";
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border/60 bg-card/60 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <span className="grid size-9 place-items-center rounded-md bg-accent font-display text-sm font-semibold text-accent-foreground">
-              MC
-            </span>
-            <div className="leading-tight">
-              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                Market Capital
-              </p>
-              <p className="font-display text-sm font-semibold">
-                Motor Inteligente de Alocação Patrimonial
-              </p>
+      <div className="mx-auto flex max-w-7xl gap-0 px-0 py-0 lg:gap-8 lg:px-6 lg:py-8">
+        <aside className="hidden min-h-screen w-72 shrink-0 flex-col border-r border-border bg-sidebar lg:flex">
+          <div className="p-8">
+            <div className="flex items-center gap-3">
+              <svg className="size-9" viewBox="0 0 40 40" fill="none">
+                <path
+                  d="M8 32L20 8L32 32"
+                  stroke="white"
+                  strokeWidth="3"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M14 26L20 14L26 26"
+                  stroke="currentColor"
+                  className="text-primary"
+                  strokeWidth="3"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <div className="flex flex-col leading-tight">
+                <span className="font-display text-sm font-extrabold tracking-tight uppercase">
+                  Market Capital
+                </span>
+                <span className="text-[10px] font-bold tracking-[0.25em] text-primary uppercase">
+                  Consultoria
+                </span>
+              </div>
             </div>
           </div>
-          <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-            Estrutura inicial
-          </span>
-        </div>
-      </header>
 
-      <div className="mx-auto flex max-w-7xl gap-8 px-6 py-8">
-        <nav aria-label="Módulos" className="hidden w-60 shrink-0 lg:block">
-          <ul className="space-y-1">
-            {modules.map((m) => (
-              <li key={m.label}>
-                {m.to ? (
-                  <Link
-                    to={m.to}
-                    className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    activeOptions={{ exact: true }}
-                    activeProps={{
-                      className:
-                        "block rounded-md px-3 py-2 text-sm bg-secondary font-medium text-secondary-foreground",
-                    }}
-                  >
-                    {m.label}
-                  </Link>
-                ) : (
-                  <span className="block rounded-md px-3 py-2 text-sm text-muted-foreground/60">
-                    {m.label}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <main className="min-w-0 flex-1">{children}</main>
+          <nav aria-label="Módulos" className="mt-2 px-6">
+            <ul className="space-y-2">
+              {modules.map((m) => (
+                <li key={m.label}>
+                  {m.to ? (
+                    <Link
+                      to={m.to}
+                      className="flex items-center gap-3 rounded-xl px-5 py-3.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      activeOptions={{ exact: true }}
+                      activeProps={{
+                        className:
+                          "flex items-center gap-3 rounded-xl px-5 py-3.5 text-sm font-semibold text-primary bg-primary/10 border border-primary/20",
+                      }}
+                    >
+                      {m.label}
+                    </Link>
+                  ) : (
+                    <span className="flex cursor-not-allowed items-center gap-3 rounded-xl px-5 py-3.5 text-sm text-muted-foreground/40">
+                      {m.label}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="mt-auto p-8">
+            <div className="flex items-center gap-3 border-t border-border pt-6">
+              <div className="flex size-9 items-center justify-center rounded-full border border-primary/30 bg-secondary text-xs font-bold">
+                IP
+              </div>
+              <div>
+                <p className="text-xs font-bold">Investidor Iniciante</p>
+                <p className="text-[10px] font-black tracking-widest text-primary uppercase">
+                  Plano PRO
+                </p>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <div className="flex min-w-0 flex-1 flex-col">
+          <header className="flex h-20 items-center justify-between border-b border-border px-6 backdrop-blur-md bg-background/80">
+            <div>
+              <p className="text-[10px] font-black tracking-[0.3em] text-primary uppercase">
+                {isOverview ? "Performance Realtime" : "Market Capital"}
+              </p>
+              <h1 className="font-display text-xl font-extrabold tracking-tight">
+                {title}
+              </h1>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+                Estrutura inicial
+              </span>
+            </div>
+          </header>
+
+          <main className="flex-1 p-6 lg:p-10">{children}</main>
+        </div>
       </div>
     </div>
   );
