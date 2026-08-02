@@ -3,13 +3,13 @@ import { Link } from "@tanstack/react-router";
 
 const modules: Array<{
   label: string;
-  to?: "/" | "/perfilamento" | "/alocacao" | "/carteira";
+  to?: "/" | "/perfilamento" | "/alocacao" | "/carteira" | "/analise";
 }> = [
   { label: "Visão Geral", to: "/" },
   { label: "Perfil do Investidor", to: "/perfilamento" },
   { label: "Inteligência de Alocação", to: "/alocacao" },
   { label: "Carteira Estratégica", to: "/carteira" },
-  { label: "Inteligência Pós-Alocação" },
+  { label: "Inteligência Pós-Alocação", to: "/analise" },
   { label: "Rebalanceamento" },
 ];
 
