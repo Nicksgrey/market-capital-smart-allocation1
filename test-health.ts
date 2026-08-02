@@ -1,11 +1,26 @@
-import { checkSupabaseHealth } from "./src/lib/health.functions";
+import { createClient } from "@supabase/supabase-js";
 
-checkSupabaseHealth()
-  .then((result) => {
-    console.log(JSON.stringify(result, null, 2));
-    process.exit(0);
-  })
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+const url = process.env["SUPABASE_URL"];
+const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+
+if (!url || !key) {
+  console.error("Missing env vars");
+  process.exit(1);
+}
+
+const supabase = createClient(url, key, {
+  auth: {
+    storage: undefined,
+    persistSession: false,
+    autoRefreshToken: false,
+  },
+});
+
+const { data, error } = await supabase.from("clients").select("id").limit(1);
+
+if (error) {
+  console.error("Error:", error.message);
+  process.exit(1);
+}
+
+console.log(JSON.stringify({ ok: true, url, tablesReachable: Array.isArray(data) }, null, 2));
