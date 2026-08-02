@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -13,6 +13,7 @@ import { RiskBudgetStep } from "@/presentation/profiling/steps/RiskBudgetStep";
 import { VolatilityStep } from "@/presentation/profiling/steps/VolatilityStep";
 import { ConsolidationPanel } from "@/presentation/profiling/ConsolidationPanel";
 import { saveInvestorProfile } from "@/lib/profiling.functions";
+import { saveProfilingHandoff } from "@/presentation/shared/profiling-handoff";
 
 const title = "Perfilamento do Investidor | Motor Inteligente de Alocação";
 const description =
@@ -34,6 +35,7 @@ export const Route = createFileRoute("/perfilamento")({
 
 function ProfilingPage() {
   const flow = useProfilingFlow();
+  const navigate = useNavigate();
   const save = useServerFn(saveInvestorProfile);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -135,11 +137,15 @@ function ProfilingPage() {
           <ConsolidationPanel
             consolidation={flow.consolidation}
             onReview={() => flow.goTo("suitability")}
-            onBuildPortfolio={() =>
-              setMessage(
-                "A Camada 2 — Inteligência de Alocação — será habilitada na próxima etapa do projeto.",
-              )
-            }
+            onBuildPortfolio={() => {
+              if (flow.behavioralScore == null || !flow.consolidation) return;
+              saveProfilingHandoff({
+                behavioralScore: flow.behavioralScore,
+                discovery: flow.discovery,
+                selectedVolatility: flow.consolidation.volatility.selected,
+              });
+              void navigate({ to: "/alocacao" });
+            }}
             onSave={() => {
               setMessage(null);
               mutation.mutate();
