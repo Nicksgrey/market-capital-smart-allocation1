@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AlocacaoRouteImport } from './routes/alocacao'
+import { Route as AnaliseRouteImport } from './routes/analise'
 import { Route as CarteiraRouteImport } from './routes/carteira'
 import { Route as PerfilamentoRouteImport } from './routes/perfilamento'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const AlocacaoRoute = AlocacaoRouteImport.update({
   id: '/alocacao',
   path: '/alocacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnaliseRoute = AnaliseRouteImport.update({
+  id: '/analise',
+  path: '/analise',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CarteiraRoute = CarteiraRouteImport.update({
@@ -38,12 +44,14 @@ const PerfilamentoRoute = PerfilamentoRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/alocacao': typeof AlocacaoRoute
+  '/analise': typeof AnaliseRoute
   '/carteira': typeof CarteiraRoute
   '/perfilamento': typeof PerfilamentoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/alocacao': typeof AlocacaoRoute
+  '/analise': typeof AnaliseRoute
   '/carteira': typeof CarteiraRoute
   '/perfilamento': typeof PerfilamentoRoute
 }
@@ -51,20 +59,23 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/alocacao': typeof AlocacaoRoute
+  '/analise': typeof AnaliseRoute
   '/carteira': typeof CarteiraRoute
   '/perfilamento': typeof PerfilamentoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/alocacao' | '/carteira' | '/perfilamento'
+  fullPaths: '/' | '/alocacao' | '/analise' | '/carteira' | '/perfilamento'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/alocacao' | '/carteira' | '/perfilamento'
-  id: '__root__' | '/' | '/alocacao' | '/carteira' | '/perfilamento'
+  to: '/' | '/alocacao' | '/analise' | '/carteira' | '/perfilamento'
+  id:
+    '__root__' | '/' | '/alocacao' | '/analise' | '/carteira' | '/perfilamento'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AlocacaoRoute: typeof AlocacaoRoute
+  AnaliseRoute: typeof AnaliseRoute
   CarteiraRoute: typeof CarteiraRoute
   PerfilamentoRoute: typeof PerfilamentoRoute
 }
@@ -83,6 +94,13 @@ declare module '@tanstack/react-router' {
       path: '/alocacao'
       fullPath: '/alocacao'
       preLoaderRoute: typeof AlocacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analise': {
+      id: '/analise'
+      path: '/analise'
+      fullPath: '/analise'
+      preLoaderRoute: typeof AnaliseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/carteira': {
@@ -105,6 +123,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AlocacaoRoute: AlocacaoRoute,
+  AnaliseRoute: AnaliseRoute,
   CarteiraRoute: CarteiraRoute,
   PerfilamentoRoute: PerfilamentoRoute,
 }

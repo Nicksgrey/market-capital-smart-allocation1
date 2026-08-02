@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 
 import { AppShell } from "@/presentation/layout/AppShell";
 import { PortfolioView } from "@/presentation/portfolio/PortfolioView";
@@ -24,7 +23,6 @@ export const Route = createFileRoute("/carteira")({
 
 function PortfolioPage() {
   const navigate = useNavigate();
-  const [message, setMessage] = useState<string | undefined>(undefined);
 
   return (
     <AppShell>
@@ -43,13 +41,12 @@ function PortfolioPage() {
         </header>
 
         <PortfolioView
-          onBackToAllocation={() => navigate({ to: "/alocacao" })}
-          onAnalyze={() =>
-            setMessage(
-              "A Camada 4 — Inteligência Pós-Alocação — será habilitada na próxima etapa do projeto.",
-            )
-          }
-          {...(message ? { analysisMessage: message } : {})}
+          onBackToAllocation={() => {
+            void navigate({ to: "/alocacao" });
+          }}
+          onAnalyze={() => {
+            void navigate({ to: "/analise" });
+          }}
         />
       </div>
     </AppShell>
