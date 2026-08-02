@@ -106,10 +106,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           <header className="flex h-20 items-center justify-between border-b border-border px-6 backdrop-blur-md bg-background/80">
             <div>
               <p className="text-[10px] font-black tracking-[0.3em] text-primary uppercase">
-                Performance Realtime
+                {isOverview ? "Performance Realtime" : "Market Capital"}
               </p>
               <h1 className="font-display text-xl font-extrabold tracking-tight">
-                Visão Geral do Patrimônio
+                {title}
               </h1>
             </div>
             <div className="flex items-center gap-4">
