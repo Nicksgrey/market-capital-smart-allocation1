@@ -20,7 +20,7 @@ export function NextStepsPanel({
   return (
     <InsightCard
       eyebrow="Módulo 4 · Camada 4"
-      title="Próximos Passos"
+      title="Próximos Passos · Evolução Patrimonial (Market Capital)"
       description="Transição entre a plataforma educacional e a consultoria personalizada da Market Capital. A plataforma entrega uma metodologia estruturada; algumas decisões dependem de análise individual."
     >
       <ul className="grid gap-3 sm:grid-cols-2">
