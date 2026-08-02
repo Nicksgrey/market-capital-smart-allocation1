@@ -14,6 +14,7 @@ import { Route as AlocacaoRouteImport } from './routes/alocacao'
 import { Route as AnaliseRouteImport } from './routes/analise'
 import { Route as CarteiraRouteImport } from './routes/carteira'
 import { Route as PerfilamentoRouteImport } from './routes/perfilamento'
+import { Route as RebalanceamentoRouteImport } from './routes/rebalanceamento'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const PerfilamentoRoute = PerfilamentoRouteImport.update({
   path: '/perfilamento',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RebalanceamentoRoute = RebalanceamentoRouteImport.update({
+  id: '/rebalanceamento',
+  path: '/rebalanceamento',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/analise': typeof AnaliseRoute
   '/carteira': typeof CarteiraRoute
   '/perfilamento': typeof PerfilamentoRoute
+  '/rebalanceamento': typeof RebalanceamentoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/analise': typeof AnaliseRoute
   '/carteira': typeof CarteiraRoute
   '/perfilamento': typeof PerfilamentoRoute
+  '/rebalanceamento': typeof RebalanceamentoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,14 +70,33 @@ export interface FileRoutesById {
   '/analise': typeof AnaliseRoute
   '/carteira': typeof CarteiraRoute
   '/perfilamento': typeof PerfilamentoRoute
+  '/rebalanceamento': typeof RebalanceamentoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/alocacao' | '/analise' | '/carteira' | '/perfilamento'
+  fullPaths:
+    | '/'
+    | '/alocacao'
+    | '/analise'
+    | '/carteira'
+    | '/perfilamento'
+    | '/rebalanceamento'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/alocacao' | '/analise' | '/carteira' | '/perfilamento'
+  to:
+    | '/'
+    | '/alocacao'
+    | '/analise'
+    | '/carteira'
+    | '/perfilamento'
+    | '/rebalanceamento'
   id:
-    '__root__' | '/' | '/alocacao' | '/analise' | '/carteira' | '/perfilamento'
+    | '__root__'
+    | '/'
+    | '/alocacao'
+    | '/analise'
+    | '/carteira'
+    | '/perfilamento'
+    | '/rebalanceamento'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -78,6 +105,7 @@ export interface RootRouteChildren {
   AnaliseRoute: typeof AnaliseRoute
   CarteiraRoute: typeof CarteiraRoute
   PerfilamentoRoute: typeof PerfilamentoRoute
+  RebalanceamentoRoute: typeof RebalanceamentoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -117,6 +145,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PerfilamentoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rebalanceamento': {
+      id: '/rebalanceamento'
+      path: '/rebalanceamento'
+      fullPath: '/rebalanceamento'
+      preLoaderRoute: typeof RebalanceamentoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -126,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnaliseRoute: AnaliseRoute,
   CarteiraRoute: CarteiraRoute,
   PerfilamentoRoute: PerfilamentoRoute,
+  RebalanceamentoRoute: RebalanceamentoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

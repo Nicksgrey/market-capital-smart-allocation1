@@ -5,14 +5,20 @@ import { ThemeToggle } from "../shared/ThemeToggle";
 
 const modules: Array<{
   label: string;
-  to?: "/" | "/perfilamento" | "/alocacao" | "/carteira" | "/analise";
+  to?:
+    | "/"
+    | "/perfilamento"
+    | "/alocacao"
+    | "/carteira"
+    | "/analise"
+    | "/rebalanceamento";
 }> = [
   { label: "Visão Geral", to: "/" },
   { label: "Perfil do Investidor", to: "/perfilamento" },
   { label: "Inteligência de Alocação", to: "/alocacao" },
   { label: "Carteira Estratégica", to: "/carteira" },
   { label: "Inteligência Pós-Alocação", to: "/analise" },
-  { label: "Rebalanceamento" },
+  { label: "Rebalanceamento", to: "/rebalanceamento" },
 ];
 
 function useModuleTitle() {
@@ -23,6 +29,7 @@ function useModuleTitle() {
     "/alocacao": "Inteligência de Alocação",
     "/carteira": "Carteira Estratégica",
     "/analise": "Inteligência Pós-Alocação",
+    "/rebalanceamento": "Rebalanceamento de Carteira",
   };
   return titles[pathname] ?? "Motor Inteligente de Alocação Patrimonial";
 }
