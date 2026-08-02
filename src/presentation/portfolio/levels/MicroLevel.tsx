@@ -60,9 +60,6 @@ export function MicroLevel({
                           <p className="text-sm">{asset.name}</p>
                           <p className="text-xs text-muted-foreground">
                             {asset.description}
-                            {asset.examples.length > 0
-                              ? ` · Exemplos: ${asset.examples.join(", ")}`
-                              : ""}
                           </p>
                         </div>
                         <span className="text-xs tabular-nums text-muted-foreground">
@@ -71,6 +68,12 @@ export function MicroLevel({
                       </li>
                     ))}
                   </ul>
+                  {group.assets[0]?.examples.length ? (
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      Exemplos educacionais:{" "}
+                      {group.assets[0].examples.join(", ")}
+                    </p>
+                  ) : null}
                 </div>
               ))}
             </div>
