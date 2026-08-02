@@ -44,17 +44,17 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex max-w-7xl gap-0 px-0 py-0 lg:gap-8 lg:px-6 lg:py-8">
         <aside className="hidden min-h-screen w-72 shrink-0 flex-col border-r border-border bg-sidebar lg:flex">
-          <div className="p-8">
+          <div className="px-6 py-8">
             <Link to="/" className="block">
               <img
                 src={logoLight.url}
                 alt="Market Capital Consultoria"
-                className="h-10 w-auto object-contain dark:hidden"
+                className="h-14 w-auto max-w-full object-contain object-left dark:hidden"
               />
               <img
                 src={logoDark.url}
                 alt="Market Capital Consultoria"
-                className="hidden h-10 w-auto object-contain dark:block"
+                className="hidden h-14 w-auto max-w-full object-contain object-left dark:block"
               />
             </Link>
           </div>
