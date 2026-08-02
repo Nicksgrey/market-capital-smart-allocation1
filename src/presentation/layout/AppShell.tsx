@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 
-const modules = [
-  { label: "Visão Geral", active: true },
-  { label: "Perfil do Investidor", active: false },
-  { label: "Classes de Ativos", active: false },
-  { label: "Carteiras Modelo", active: false },
-  { label: "Alocação Sugerida", active: false },
-  { label: "Rebalanceamento", active: false },
+const modules: Array<{ label: string; to?: "/" | "/perfilamento" }> = [
+  { label: "Visão Geral", to: "/" },
+  { label: "Perfil do Investidor", to: "/perfilamento" },
+  { label: "Classes de Ativos" },
+  { label: "Carteiras Modelo" },
+  { label: "Alocação Sugerida" },
+  { label: "Rebalanceamento" },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -38,15 +39,23 @@ export function AppShell({ children }: { children: ReactNode }) {
           <ul className="space-y-1">
             {modules.map((m) => (
               <li key={m.label}>
-                <span
-                  className={`block rounded-md px-3 py-2 text-sm ${
-                    m.active
-                      ? "bg-secondary font-medium text-secondary-foreground"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {m.label}
-                </span>
+                {m.to ? (
+                  <Link
+                    to={m.to}
+                    className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    activeOptions={{ exact: true }}
+                    activeProps={{
+                      className:
+                        "block rounded-md px-3 py-2 text-sm bg-secondary font-medium text-secondary-foreground",
+                    }}
+                  >
+                    {m.label}
+                  </Link>
+                ) : (
+                  <span className="block rounded-md px-3 py-2 text-sm text-muted-foreground/60">
+                    {m.label}
+                  </span>
+                )}
               </li>
             ))}
           </ul>

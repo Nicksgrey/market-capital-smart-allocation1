@@ -1119,6 +1119,164 @@ export type Database = {
         }
         Relationships: []
       }
+      map_investor_profiles: {
+        Row: {
+          age: number | null
+          behavioral_profile: string | null
+          behavioral_score: number | null
+          completed_at: string | null
+          created_at: string
+          current_step: string
+          dependents: number
+          diagnosis: string | null
+          emergency_reserve_months: string | null
+          final_profile: string | null
+          financial_capacity_label: string | null
+          financial_capacity_score: number | null
+          horizon_years: number | null
+          id: string
+          is_retired: boolean
+          liquidity_need: string | null
+          main_goal: string | null
+          monthly_expenses: number | null
+          monthly_income: number | null
+          net_worth: number | null
+          recommended_volatility: number | null
+          risk_budget_score: number | null
+          selected_volatility: number | null
+          status: string
+          updated_at: string
+          user_id: string
+          volatility_range_max: number | null
+          volatility_range_min: number | null
+          volatility_status: string | null
+        }
+        Insert: {
+          age?: number | null
+          behavioral_profile?: string | null
+          behavioral_score?: number | null
+          completed_at?: string | null
+          created_at?: string
+          current_step?: string
+          dependents?: number
+          diagnosis?: string | null
+          emergency_reserve_months?: string | null
+          final_profile?: string | null
+          financial_capacity_label?: string | null
+          financial_capacity_score?: number | null
+          horizon_years?: number | null
+          id?: string
+          is_retired?: boolean
+          liquidity_need?: string | null
+          main_goal?: string | null
+          monthly_expenses?: number | null
+          monthly_income?: number | null
+          net_worth?: number | null
+          recommended_volatility?: number | null
+          risk_budget_score?: number | null
+          selected_volatility?: number | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          volatility_range_max?: number | null
+          volatility_range_min?: number | null
+          volatility_status?: string | null
+        }
+        Update: {
+          age?: number | null
+          behavioral_profile?: string | null
+          behavioral_score?: number | null
+          completed_at?: string | null
+          created_at?: string
+          current_step?: string
+          dependents?: number
+          diagnosis?: string | null
+          emergency_reserve_months?: string | null
+          final_profile?: string | null
+          financial_capacity_label?: string | null
+          financial_capacity_score?: number | null
+          horizon_years?: number | null
+          id?: string
+          is_retired?: boolean
+          liquidity_need?: string | null
+          main_goal?: string | null
+          monthly_expenses?: number | null
+          monthly_income?: number | null
+          net_worth?: number | null
+          recommended_volatility?: number | null
+          risk_budget_score?: number | null
+          selected_volatility?: number | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          volatility_range_max?: number | null
+          volatility_range_min?: number | null
+          volatility_status?: string | null
+        }
+        Relationships: []
+      }
+      map_profile_snapshots: {
+        Row: {
+          behavioral_profile: string | null
+          behavioral_score: number | null
+          created_at: string
+          final_profile: string | null
+          financial_capacity_label: string | null
+          financial_capacity_score: number | null
+          id: string
+          payload: Json
+          profile_id: string
+          recommended_volatility: number | null
+          risk_budget_score: number | null
+          selected_volatility: number | null
+          updated_at: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          behavioral_profile?: string | null
+          behavioral_score?: number | null
+          created_at?: string
+          final_profile?: string | null
+          financial_capacity_label?: string | null
+          financial_capacity_score?: number | null
+          id?: string
+          payload?: Json
+          profile_id: string
+          recommended_volatility?: number | null
+          risk_budget_score?: number | null
+          selected_volatility?: number | null
+          updated_at?: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          behavioral_profile?: string | null
+          behavioral_score?: number | null
+          created_at?: string
+          final_profile?: string | null
+          financial_capacity_label?: string | null
+          financial_capacity_score?: number | null
+          id?: string
+          payload?: Json
+          profile_id?: string
+          recommended_volatility?: number | null
+          risk_budget_score?: number | null
+          selected_volatility?: number | null
+          updated_at?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "map_profile_snapshots_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "map_investor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_methods: {
         Row: {
           created_at: string | null
