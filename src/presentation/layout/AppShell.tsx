@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 
 import { ThemeToggle } from "../shared/ThemeToggle";
+import logoLight from "@/assets/mc-logo-light.png.asset.json";
+import logoDark from "@/assets/mc-logo-dark.png.asset.json";
 
 const modules: Array<{
   label: string;
@@ -43,31 +45,18 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="mx-auto flex max-w-7xl gap-0 px-0 py-0 lg:gap-8 lg:px-6 lg:py-8">
         <aside className="hidden min-h-screen w-72 shrink-0 flex-col border-r border-border bg-sidebar lg:flex">
           <div className="p-8">
-            <div className="flex items-center gap-3">
-              <svg className="size-9" viewBox="0 0 40 40" fill="none">
-                <path
-                  d="M8 32L20 8L32 32"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M14 26L20 14L26 26"
-                  stroke="currentColor"
-                  className="text-primary"
-                  strokeWidth="3"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <div className="flex flex-col leading-tight">
-                <span className="font-display text-sm font-extrabold tracking-tight uppercase">
-                  Market Capital
-                </span>
-                <span className="text-[10px] font-bold tracking-[0.25em] text-primary uppercase">
-                  Consultoria
-                </span>
-              </div>
-            </div>
+            <Link to="/" className="block">
+              <img
+                src={logoLight.url}
+                alt="Market Capital Consultoria"
+                className="h-10 w-auto object-contain dark:hidden"
+              />
+              <img
+                src={logoDark.url}
+                alt="Market Capital Consultoria"
+                className="hidden h-10 w-auto object-contain dark:block"
+              />
+            </Link>
           </div>
 
           <nav aria-label="Módulos" className="mt-2 px-6">
