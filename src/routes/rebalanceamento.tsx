@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowLeftRight,
   Calculator,
+  Globe,
   LineChart,
+  RefreshCw,
   ShieldCheck,
   Sparkles,
   Target,
@@ -44,13 +46,23 @@ const pillars = [
   },
   {
     icon: Calculator,
-    title: "Aporte automatizado por ativo",
-    text: "Informe o valor do aporte e a plataforma calcula exatamente quanto investir em cada ativo para restaurar a proporção-alvo do patrimônio.",
+    title: "Motor de decisão do aporte mensal",
+    text: "Não é só \"restaurar proporção\": na hora do aporte mensal você informa o valor e a plataforma diz exatamente quanto colocar em cada ativo — quantidade de cotas e valor financeiro — para manter a estratégia da carteira. A dúvida de \"onde invisto esse mês?\" deixa de existir.",
+  },
+  {
+    icon: RefreshCw,
+    title: "Posição atualizada em tempo real",
+    text: "A posição do investidor é atualizada minuto a minuto. Você abre a plataforma e vê o patrimônio total aplicado agora, com cotação de mercado — sem atualizar planilha, sem preço defasado.",
+  },
+  {
+    icon: Globe,
+    title: "Consolidador global: Brasil e Exterior",
+    text: "Ativos em várias corretoras e instituições, no Brasil e no Exterior, unificados em um único lugar. Basta cadastrar os ativos e todo o patrimônio investido passa a ser lido como uma carteira só.",
   },
   {
     icon: LineChart,
-    title: "Cotações e múltiplas classes",
-    text: "FIIs, Ações BR, ETFs BR, Ações Exterior e ETFs Exterior em um só lugar, com cotação atualizada — sem planilhas manuais e desatualizadas.",
+    title: "Bandas por MACRO, MESO e MICRO",
+    text: "FIIs, Ações BR, ETFs BR, Ações e ETFs no Exterior, Renda Fixa e Fundos — cada nível com sua banda e prioridade: classes, setores e depois ativos individuais, mostrando o que comprar, o que vender e quanto.",
   },
 ];
 
