@@ -4,3 +4,4 @@ const prof = consolidateInvestorProfile({behavioralScore:62, discovery:{age:41,n
 console.log(JSON.stringify(prof).slice(0,400));
 const r = buildStrategicPortfolio({profile:prof, requestedVolatility:12, educationalSimulation:false});
 console.log(JSON.stringify(r).slice(0,600));
+console.log("keys:", Object.keys(r as any));
