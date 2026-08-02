@@ -77,13 +77,20 @@ function Index() {
 
       <section className="mt-6 rounded-xl border border-dashed border-border p-5">
         <h2 className="font-display text-base font-semibold">
-          Pendência: integração Supabase
+          Integração Supabase conectada
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Conecte o projeto existente da Market Capital
-          (<code className="text-accent">wfafvpsixaotzegvvwkx</code>) pela
-          integração Supabase do Lovable. Nenhum banco novo será criado e
-          nenhuma tabela, política ou função existente será alterada.
+          Projeto vinculado ao Supabase existente da Market Capital:
+          <code className="text-accent"> wfafvpsixaotzegvvwkx</code>. Auth,
+          banco de dados e storage já apontam para esse projeto. Nenhum banco
+          novo foi criado e nenhuma tabela, política ou função existente foi
+          alterada.
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          A camada <code className="text-accent">src/infrastructure/supabase</code>
+          foi criada com clientes browser/server, repositório base e verificação
+          de saúde. As novas tabelas do Motor de Alocação serão criadas
+          exclusivamente neste mesmo projeto.
         </p>
       </section>
     </AppShell>
