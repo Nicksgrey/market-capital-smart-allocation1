@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { AppShell } from "@/presentation/layout/AppShell";
+import { Button } from "@/components/ui/button";
 
 const title = "Motor Inteligente de Alocação Patrimonial | Market Capital";
 const description =
@@ -31,9 +32,12 @@ function Index() {
           Motor Inteligente de Alocação Patrimonial
         </h1>
         <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-          Estrutura inicial preparada. Aguardando a documentação funcional para
-          iniciar a construção em etapas.
+          Camada 1 — Perfilamento do Investidor disponível. As camadas
+          seguintes serão habilitadas nas próximas etapas.
         </p>
+        <Button asChild className="mt-6">
+          <Link to="/perfilamento">Iniciar Perfilamento do Investidor</Link>
+        </Button>
       </div>
     </AppShell>
   );
