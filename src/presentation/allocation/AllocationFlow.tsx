@@ -20,7 +20,10 @@ export function AllocationFlow({
   portfolioMessage,
 }: {
   onReviewProfile: () => void;
-  onGeneratePortfolio: () => void;
+  onGeneratePortfolio: (approved: {
+    requestedVolatility: number;
+    educationalSimulation: boolean;
+  }) => void;
   portfolioMessage?: string;
 }) {
   const flow = useAllocationFlow();
@@ -115,7 +118,12 @@ export function AllocationFlow({
         <ValidationPanel
           validation={portfolio.validation}
           educationalOnly={portfolio.educationalOnly}
-          onGeneratePortfolio={onGeneratePortfolio}
+          onGeneratePortfolio={() =>
+            onGeneratePortfolio({
+              requestedVolatility: portfolio.volatilityControl.approvedVolatility,
+              educationalSimulation: portfolio.educationalOnly,
+            })
+          }
           onSimulateOtherVolatility={() =>
             flow.setSimulatedVolatility(
               flow.profile?.volatility.recommended ?? 8,
