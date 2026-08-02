@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AlocacaoRouteImport } from './routes/alocacao'
 import { Route as PerfilamentoRouteImport } from './routes/perfilamento'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlocacaoRoute = AlocacaoRouteImport.update({
+  id: '/alocacao',
+  path: '/alocacao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PerfilamentoRoute = PerfilamentoRouteImport.update({
@@ -25,27 +31,31 @@ const PerfilamentoRoute = PerfilamentoRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/alocacao': typeof AlocacaoRoute
   '/perfilamento': typeof PerfilamentoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/alocacao': typeof AlocacaoRoute
   '/perfilamento': typeof PerfilamentoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/alocacao': typeof AlocacaoRoute
   '/perfilamento': typeof PerfilamentoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/perfilamento'
+  fullPaths: '/' | '/alocacao' | '/perfilamento'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/perfilamento'
-  id: '__root__' | '/' | '/perfilamento'
+  to: '/' | '/alocacao' | '/perfilamento'
+  id: '__root__' | '/' | '/alocacao' | '/perfilamento'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AlocacaoRoute: typeof AlocacaoRoute
   PerfilamentoRoute: typeof PerfilamentoRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alocacao': {
+      id: '/alocacao'
+      path: '/alocacao'
+      fullPath: '/alocacao'
+      preLoaderRoute: typeof AlocacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/perfilamento': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AlocacaoRoute: AlocacaoRoute,
   PerfilamentoRoute: PerfilamentoRoute,
 }
 export const routeTree = rootRouteImport
