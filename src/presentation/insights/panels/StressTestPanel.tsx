@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import type { StressTestReport } from "@/domain/insights/types";
 
 import { DirectionBadge, EducationalNotice, InsightCard } from "../InsightsUI";
@@ -128,10 +127,6 @@ export function StressTestPanel({ report }: { report: StressTestReport }) {
         projeções de rentabilidade e resultados passados não garantem resultados
         futuros.
       </EducationalNotice>
-
-      <div className="hidden">
-        <Button variant="outline">placeholder</Button>
-      </div>
     </InsightCard>
   );
 }
