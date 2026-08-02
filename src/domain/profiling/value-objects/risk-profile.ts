@@ -25,10 +25,10 @@ export function clampScore(score: number): number {
 
 export function classifyRiskProfile(score: number): RiskProfile {
   const value = clampScore(score);
-  const band =
-    RISK_PROFILE_BANDS.find((b) => value >= b.min && value <= b.max) ??
-    RISK_PROFILE_BANDS[0];
-  return band.profile;
+  const band = RISK_PROFILE_BANDS.find(
+    (b) => value >= b.min && value <= b.max,
+  );
+  return band?.profile ?? "muito_conservador";
 }
 
 export function riskProfileLabel(profile: RiskProfile): string {
