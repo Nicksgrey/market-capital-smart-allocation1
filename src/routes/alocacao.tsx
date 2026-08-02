@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { AppShell } from "@/presentation/layout/AppShell";
 import { AllocationFlow } from "@/presentation/allocation/AllocationFlow";
+import { saveAllocationHandoff } from "@/presentation/shared/allocation-handoff";
 
 const title = "Inteligência de Alocação | Motor Inteligente de Alocação";
 const description =
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/alocacao")({
 
 function AllocationPage() {
   const navigate = useNavigate();
-  const [message, setMessage] = useState<string | undefined>(undefined);
+  const [message] = useState<string | undefined>(undefined);
 
   return (
     <AppShell>
@@ -44,11 +45,10 @@ function AllocationPage() {
 
         <AllocationFlow
           onReviewProfile={() => navigate({ to: "/perfilamento" })}
-          onGeneratePortfolio={() =>
-            setMessage(
-              "A Camada 3 — Construção da Carteira — será habilitada na próxima etapa do projeto.",
-            )
-          }
+          onGeneratePortfolio={(approved) => {
+            saveAllocationHandoff(approved);
+            void navigate({ to: "/carteira" });
+          }}
           {...(message ? { portfolioMessage: message } : {})}
         />
       </div>
