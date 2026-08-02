@@ -101,9 +101,10 @@ function RebalancePage() {
                   Rebalanceie com Método, Não com Planilha
                 </h2>
                 <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-                  Não existe nada igual no Brasil: cotação automática, Regra
-                  5/25 aplicada por classe e por ativo, e o cálculo exato do
-                  aporte para manter a proporção do seu patrimônio.
+                  Não existe nada igual no Brasil: patrimônio consolidado em
+                  tempo real (Brasil + Exterior), Regra 5/25 aplicada por
+                  classe, setor e ativo, e o cálculo exato de quanto colocar em
+                  cada ativo no seu aporte mensal.
                 </p>
               </div>
             </div>
@@ -155,8 +156,12 @@ function RebalancePage() {
               Sem rebalanceamento, até investidores experientes acabam com
               carteiras muito mais arriscadas do que planejaram — normalmente
               controladas em planilhas manuais, sem cotação automática e sem o
-              cálculo correto de proporção. O rebalanceamento é a base sólida
-              das decisões: menos improviso, mais consistência ao longo dos anos.
+              cálculo correto de proporção. Aqui é o contrário: o patrimônio
+              inteiro fica visível e atualizado em tempo real, e todo mês a
+              plataforma transforma o seu aporte em uma decisão pronta —
+              ativo por ativo, no valor exato. É isso que sustenta as decisões
+              dos investidores mais experientes da plataforma: menos improviso,
+              mais consistência ao longo dos anos.
             </p>
           </div>
           <div className="mt-6">
