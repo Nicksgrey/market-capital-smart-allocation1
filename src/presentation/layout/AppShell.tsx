@@ -85,14 +85,14 @@ export function AppShell({ children }: { children: ReactNode }) {
             </ul>
           </nav>
 
-          <div className="mt-auto p-8">
-            <div className="flex items-center gap-3 border-t border-border pt-6">
-              <div className="flex size-9 items-center justify-center rounded-full border border-primary/30 bg-secondary text-xs font-bold">
+          <div className="mt-8 px-6">
+            <div className="flex items-center gap-3 rounded-2xl border border-border bg-secondary/50 p-4">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-primary/60 bg-background text-sm font-black">
                 IP
               </div>
               <div>
-                <p className="text-xs font-bold">Investidor Iniciante</p>
-                <p className="text-[10px] font-black tracking-widest text-primary uppercase">
+                <p className="text-sm font-bold leading-tight">Investidor Iniciante</p>
+                <p className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">
                   Plano PRO
                 </p>
               </div>
