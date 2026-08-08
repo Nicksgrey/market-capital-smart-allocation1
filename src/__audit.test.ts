@@ -1,9 +1,9 @@
-import { test } from "vitest";
-test("audit", () => {
 import { consolidateInvestorProfile } from "@/application/profiling/use-cases/consolidate-investor-profile";
 import { buildStrategicPortfolio } from "@/application/allocation/use-cases/build-strategic-portfolio";
 import { presentStrategicPortfolio } from "@/application/portfolio/use-cases/present-strategic-portfolio";
 import { EMPTY_DISCOVERY } from "@/application/profiling/dto/investor-profile.dto";
+import { test } from "vitest";
+test("audit", () => {
 
 const cases = [
   { name: "conservador", behavioralScore: 15, horizonYears: 3, mainGoal: "preservacao", liquidityNeed: "alta" },
