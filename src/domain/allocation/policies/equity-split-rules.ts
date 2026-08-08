@@ -117,11 +117,6 @@ function redistribute(
       const share = (remaining * room) / totalRoom;
       weights[macro] = round4(weights[macro] + share);
     }
-    remaining = round4(
-      delta -
-        others.reduce((sum, macro) => sum + weights[macro], 0) +
-        others.reduce((sum, macro) => sum + weights[macro], 0),
-    );
     // Recalcula o residual real a partir do total da carteira.
     const total = MACRO_CLASS_ORDER.reduce((sum, m) => sum + weights[m], 0);
     remaining = round4(100 - total);
