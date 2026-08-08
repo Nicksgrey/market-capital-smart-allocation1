@@ -28,7 +28,7 @@ export const MICRO_EXAMPLES: Record<string, string[]> = {
   "fiis:fii_papel": ["KNSC11", "RBRR11"],
   "fiis:fii_tijolo": ["HGLG11", "BTLG11"],
   "fiis:fii_hibrido": ["FIIs híbridos"],
-  "fiis:fii_agro": ["Fiagro de crédito e ativos do agronegócio"],
+  "fiis:fii_infra": ["FI-Infra de crédito incentivado de infraestrutura"],
 
   "alternativos:multiestrategia": ["Fundos multiestratégia"],
   "alternativos:ouro_cambio": ["ETF de ouro"],
