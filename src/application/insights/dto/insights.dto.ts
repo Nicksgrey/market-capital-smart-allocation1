@@ -68,6 +68,11 @@ export interface AiAdvisorContext {
     resiliencia: string;
     cenarios: Array<{ cenario: string; leitura: string }>;
   };
-  validationEngine: { aprovada: boolean; resumo: string };
+  validationEngine: {
+    aprovada: boolean;
+    resumo: string;
+    errosBloqueantes: string[];
+    pontosDeAtencao: Array<{ item: string; detalhe: string }>;
+  };
   apenasEducacional: boolean;
 }

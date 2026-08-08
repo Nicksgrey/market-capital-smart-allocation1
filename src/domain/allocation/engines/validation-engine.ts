@@ -31,6 +31,7 @@ export function runValidationEngine(input: {
   checks.push({
     id: "soma",
     label: "Soma da carteira = 100%",
+    mandatory: true,
     severity: Math.abs(total - 100) < 0.5 ? "aprovado" : "reprovado",
     detail: `Soma apurada: ${round1(total)}%.`,
   });
@@ -44,6 +45,7 @@ export function runValidationEngine(input: {
   checks.push({
     id: "saa",
     label: "Respeitou a Política de Alocação Estratégica (SAA)",
+    mandatory: true,
     severity: saaViolations.length === 0 ? "aprovado" : "reprovado",
     detail:
       saaViolations.length === 0
@@ -66,6 +68,7 @@ export function runValidationEngine(input: {
   checks.push({
     id: "liquidez",
     label: "Respeitou as regras de liquidez",
+    mandatory: false,
     severity: liquidityIssues.length === 0 ? "aprovado" : "alerta",
     detail:
       liquidityIssues.length === 0
@@ -79,6 +82,7 @@ export function runValidationEngine(input: {
   checks.push({
     id: "objetivo",
     label: "Respeitou as regras por objetivo",
+    mandatory: false,
     severity: "aprovado",
     detail: `${policy.goal.headline}: inclinações aplicadas dentro dos limites da SAA.`,
   });
@@ -94,6 +98,7 @@ export function runValidationEngine(input: {
   checks.push({
     id: "diversificacao",
     label: "Respeitou a diversificação",
+    mandatory: false,
     severity: diversificationOk ? "aprovado" : "alerta",
     detail: `${activeClasses} classes ativas (mínimo ${policy.diversification.minClasses}); maior exposição por país: ${round1(
       maxCountry,
@@ -105,17 +110,37 @@ export function runValidationEngine(input: {
   const maxSleeve = Math.max(
     ...structure.macro.flatMap((b) => b.sleeves.map((s) => s.weight)),
   );
-  const concentrationOk =
-    maxClassWeight <= policy.concentration.maxPerMacroClass + 0.5 &&
-    maxSleeve <= policy.concentration.maxPerMesoSleeve + 0.5;
+  // Limite obrigatório de concentração (com tolerância de arredondamento):
+  // violação = erro bloqueante. Aproximação do limite (>=95% do teto) é
+  // apenas concentração justificável → warning.
+  const macroBreach = maxClassWeight > policy.concentration.maxPerMacroClass + 0.5;
+  const sleeveBreach = maxSleeve > policy.concentration.maxPerMesoSleeve + 0.5;
+  const concentrationBreach = macroBreach || sleeveBreach;
+  const concentrationTight =
+    !concentrationBreach &&
+    (maxClassWeight >= policy.concentration.maxPerMacroClass * 0.95 ||
+      maxSleeve >= policy.concentration.maxPerMesoSleeve * 0.95);
+  const concentrationDetail = `Maior classe: ${round1(maxClassWeight)}% (limite ${policy.concentration.maxPerMacroClass}%); maior sub-classe: ${round1(
+    maxSleeve,
+  )}% (limite ${policy.concentration.maxPerMesoSleeve}%).`;
   checks.push({
     id: "concentracao",
-    label: "Respeitou as regras de concentração",
-    severity: concentrationOk ? "aprovado" : "alerta",
-    detail: `Maior classe: ${round1(maxClassWeight)}% (limite ${policy.concentration.maxPerMacroClass}%); maior sub-classe: ${round1(
-      maxSleeve,
-    )}% (limite ${policy.concentration.maxPerMesoSleeve}%).`,
+    label: "Respeitou as regras obrigatórias de concentração",
+    mandatory: true,
+    severity: concentrationBreach ? "reprovado" : "aprovado",
+    detail: concentrationBreach
+      ? `Limite obrigatório de concentração violado. ${concentrationDetail}`
+      : concentrationDetail,
   });
+  if (concentrationTight) {
+    checks.push({
+      id: "concentracao_justificavel",
+      label: "Concentração próxima do limite (justificável)",
+      mandatory: false,
+      severity: "alerta",
+      detail: `A carteira opera próxima do teto permitido de concentração, o que é aceitável para este perfil, mas merece acompanhamento. ${concentrationDetail}`,
+    });
+  }
 
   // 7) Regras tributárias
   const taxEfficientWeight = structure.macro
@@ -125,20 +150,31 @@ export function runValidationEngine(input: {
   checks.push({
     id: "tributario",
     label: "Respeitou as regras tributárias",
-    severity: "aprovado",
+    mandatory: false,
+    severity: taxEfficientWeight > 0 ? "aprovado" : "alerta",
     detail: `${round1(taxEfficientWeight)}% da carteira em veículos priorizados por eficiência tributária.`,
   });
 
-  // 8) Volatilidade
-  const volOk =
-    volatilityControl.status === "aprovada" ||
-    volatilityControl.status === "aprovada_com_alerta";
+  // 8) Volatilidade máxima permitida — regra obrigatória.
+  const volBlocking =
+    volatilityControl.status === "acima_do_permitido" ||
+    volatilityControl.status === "bloqueada";
   checks.push({
     id: "volatilidade",
-    label: "Respeitou a volatilidade aprovada",
-    severity: volOk ? "aprovado" : "alerta",
+    label: "Respeitou a volatilidade máxima permitida",
+    mandatory: true,
+    severity: volBlocking ? "reprovado" : "aprovado",
     detail: `Volatilidade-alvo de ${optimization.targetVolatility}% ao ano (faixa permitida ${volatilityControl.allowedRange.min}%–${volatilityControl.allowedRange.max}%).`,
   });
+  if (volatilityControl.status === "aprovada_com_alerta") {
+    checks.push({
+      id: "volatilidade_tradeoff",
+      label: "Trade-off entre volatilidade e diversificação",
+      mandatory: false,
+      severity: "alerta",
+      detail: `A volatilidade escolhida (${volatilityControl.approvedVolatility}%) está dentro da faixa permitida, mas distante da recomendada (${volatilityControl.recommendedVolatility}%), o que altera o equilíbrio entre risco e diversificação.`,
+    });
+  }
 
   // 9) Classe Ações: Brasil = 50% e Exterior = 50% do peso total da classe.
   const brasil = weightOf(structure, "acoes_brasil");
@@ -153,6 +189,7 @@ export function runValidationEngine(input: {
   checks.push({
     id: "acoes_50_50",
     label: "Classe Ações dividida 50% Brasil / 50% Exterior",
+    mandatory: true,
     severity: equitySplitOk ? "aprovado" : "reprovado",
     detail:
       equityTotal === 0
@@ -174,6 +211,7 @@ export function runValidationEngine(input: {
   checks.push({
     id: "fiis_distribuicao",
     label: "Distribuição interna de FIIs (40 Papel / 40 Tijolo / 15 Híbridos / 5 FI-Infra)",
+    mandatory: true,
     severity: !fiis || fiiDeviations.length === 0 ? "aprovado" : "reprovado",
     detail: !fiis
       ? "A carteira não possui Fundos Imobiliários e nenhuma exposição foi criada artificialmente."
@@ -186,14 +224,26 @@ export function runValidationEngine(input: {
             .join("; ")}.`,
   });
 
-  const approved = checks.every((c) => c.severity !== "reprovado") && volOk;
+  // ERRO BLOQUEANTE = violação de regra obrigatória. WARNING = ponto de
+  // atenção não bloqueante, que não reprova a carteira.
+  const blockingErrors = checks.filter(
+    (c) => c.mandatory && c.severity === "reprovado",
+  );
+  const warnings = checks.filter(
+    (c) => !c.mandatory && c.severity === "alerta",
+  );
+  const approved = blockingErrors.length === 0;
 
   return {
     approved,
     checks,
+    blockingErrors,
+    warnings,
     summary: approved
-      ? "Carteira aprovada — todas as verificações do Validation Engine foram atendidas."
-      : "Carteira não aprovada — ajuste os parâmetros antes de gerar a carteira recomendada.",
+      ? warnings.length === 0
+        ? "Carteira aprovada — todas as regras obrigatórias e de qualidade foram atendidas."
+        : `Carteira aprovada — nenhuma regra obrigatória foi violada. Há ${warnings.length} ponto(s) de atenção não bloqueante(s), tratados pelo Diagnóstico Inteligente.`
+      : `Carteira reprovada — ${blockingErrors.length} erro(s) bloqueante(s) por violação de regra obrigatória. Ajuste os parâmetros antes de gerar a carteira recomendada.`,
   };
 }
 
