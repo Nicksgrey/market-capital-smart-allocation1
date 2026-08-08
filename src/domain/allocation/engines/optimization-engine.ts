@@ -1,11 +1,16 @@
 import {
   MACRO_CLASS_ORDER,
+  type EquityExposure,
   type MacroClass,
   type OptimizationFactor,
   type OptimizationResult,
   type PolicyDecision,
 } from "../types";
 import { RISK_ORIENTATION } from "../policies/saa-policy";
+import {
+  EQUITY_SPLIT_POLICY,
+  applyEquitySplit,
+} from "../policies/equity-split-rules";
 
 /**
  * OPTIMIZATION ENGINE — cálculo dos pesos.
@@ -84,11 +89,24 @@ export function runOptimizationEngine(input: {
   // 6) Normalização para 100% respeitando as faixas da SAA.
   normalizeToBands(weights, bands);
 
+  // 7) Restrição de renda variável: 50% Brasil / 50% Exterior sobre o TOTAL
+  // destinado à classe de ações. A regra divide — nunca amplia — a exposição.
+  const equity = applyEquitySplit(weights, bands);
+  normalizeToBands(weights, bands);
+  factors.push({
+    label: "Renda variável — Brasil e Exterior",
+    detail:
+      equity.total > 0
+        ? `${EQUITY_SPLIT_POLICY.brasilShareOfEquity}% da exposição em ações em Brasil e ${EQUITY_SPLIT_POLICY.exteriorShareOfEquity}% no Exterior. ${equity.note}`
+        : equity.note,
+  });
+
   return {
     targetVolatility: input.approvedVolatility,
-    weights: roundWeights(weights),
+    weights: roundWeights(weights, equity),
     bands,
     factors,
+    equity,
   };
 }
 
@@ -147,23 +165,45 @@ function normalizeToBands(
   }
 }
 
+/**
+ * Arredonda os pesos para uma casa decimal preservando duas invariantes:
+ * a soma exata de 100% e a igualdade entre Ações Brasil e Ações Exterior.
+ */
 function roundWeights(
   weights: Record<MacroClass, number>,
+  equity: EquityExposure,
 ): Record<MacroClass, number> {
   const rounded = emptyWeights();
   for (const macro of MACRO_CLASS_ORDER) {
-    rounded[macro] = Math.round(weights[macro]);
+    rounded[macro] = round1(weights[macro]);
   }
-  // Corrige o arredondamento na maior classe para fechar exatamente 100%.
-  const diff =
-    100 - MACRO_CLASS_ORDER.reduce((sum, m) => sum + rounded[m], 0);
+
+  // A metade da renda variável é arredondada uma única vez e replicada,
+  // garantindo Brasil = Exterior = 50% da classe de ações.
+  const half = round1((rounded.acoes_brasil + rounded.exterior) / 2);
+  rounded.acoes_brasil = half;
+  rounded.exterior = half;
+
+  const diff = round1(
+    100 - MACRO_CLASS_ORDER.reduce((sum, m) => sum + rounded[m], 0),
+  );
   if (diff !== 0) {
-    const largest = MACRO_CLASS_ORDER.reduce((a, b) =>
-      rounded[a] >= rounded[b] ? a : b,
-    );
-    rounded[largest] += diff;
+    const others = MACRO_CLASS_ORDER.filter(
+      (macro) => macro !== "acoes_brasil" && macro !== "exterior",
+    ).filter((macro) => rounded[macro] > 0);
+    if (others.length > 0) {
+      const largest = others.reduce((a, b) => (rounded[a] >= rounded[b] ? a : b));
+      rounded[largest] = round1(rounded[largest] + diff);
+    } else if (equity.total > 0) {
+      rounded.acoes_brasil = round1(rounded.acoes_brasil + diff / 2);
+      rounded.exterior = rounded.acoes_brasil;
+    }
   }
   return rounded;
+}
+
+function round1(value: number): number {
+  return Math.round(value * 10) / 10;
 }
 
 function clamp(value: number, min: number, max: number): number {
