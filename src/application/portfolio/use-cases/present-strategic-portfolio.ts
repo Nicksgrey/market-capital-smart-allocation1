@@ -19,6 +19,7 @@ import type {
   PresentStrategicPortfolioInput,
   PresentStrategicPortfolioOutput,
 } from "../dto/portfolio-presentation.dto";
+import { distributeAmount } from "../amount-allocation";
 
 /**
  * CAMADA 3 — CONSTRUÇÃO E APRESENTAÇÃO DA CARTEIRA.
@@ -40,46 +41,81 @@ export function presentStrategicPortfolio(
   const amountOf = (weight: number): number | null =>
     investedAmount == null ? null : (investedAmount * weight) / 100;
 
-  const macro: MacroView[] = structure.macro.map((bucket) => ({
+  /**
+   * Fechamento exato: os valores macro somam o aporte informado, os valores das
+   * sub-classes somam o valor da classe e os ativos somam o valor da sub-classe.
+   */
+  const macroAmounts =
+    investedAmount == null
+      ? null
+      : distributeAmount(
+          investedAmount,
+          structure.macro.map((bucket) => bucket.weight),
+        );
+
+  const macroAmountAt = (index: number): number | null =>
+    macroAmounts ? (macroAmounts[index] ?? 0) : null;
+
+  const sleeveAmountsByMacro = structure.macro.map((bucket, index) =>
+    macroAmounts
+      ? distributeAmount(
+          macroAmountAt(index) ?? 0,
+          bucket.sleeves.map((sleeve) => sleeve.weight),
+        )
+      : null,
+  );
+
+  const macro: MacroView[] = structure.macro.map((bucket, index) => ({
     macro: bucket.macro,
     label: bucket.label,
     weight: bucket.weight,
-    amount: amountOf(bucket.weight),
+    amount: macroAmountAt(index),
   }));
 
-  const meso: MesoGroupView[] = structure.macro.map((bucket) => ({
+  const meso: MesoGroupView[] = structure.macro.map((bucket, index) => ({
     macro: bucket.macro,
     label: bucket.label,
     weight: bucket.weight,
-    amount: amountOf(bucket.weight),
-    sleeves: bucket.sleeves.map((sleeve) => ({
+    amount: macroAmountAt(index),
+    sleeves: bucket.sleeves.map((sleeve, sleeveIndex) => ({
       id: sleeve.id,
       label: sleeve.label,
       weight: sleeve.weight,
       shareOfClass: sleeve.shareOfClass,
-      amount: amountOf(sleeve.weight),
+      amount: sleeveAmountsByMacro[index]?.[sleeveIndex] ?? null,
       liquidityBucket: sleeve.liquidityBucket,
       country: sleeve.country,
       ...(sleeve.taxNote ? { taxNote: sleeve.taxNote } : {}),
     })),
   }));
 
-  const micro: MicroGroupView[] = structure.macro.flatMap((bucket) =>
-    bucket.sleeves.map((sleeve) => ({
-      macro: bucket.macro,
-      macroLabel: MACRO_CLASS_LABEL[bucket.macro],
-      sleeveId: sleeve.id,
-      sleeveLabel: sleeve.label,
-      weight: sleeve.weight,
-      amount: amountOf(sleeve.weight),
-      assets: sleeve.micro.map((asset) => ({
-        name: asset.name,
-        description: asset.description,
-        weight: asset.weight,
-        amount: amountOf(asset.weight),
-        examples: microExamplesFor(sleeve.id),
-      })),
-    })),
+  const micro: MicroGroupView[] = structure.macro.flatMap((bucket, index) =>
+    bucket.sleeves.map((sleeve, sleeveIndex) => {
+      const sleeveAmount = sleeveAmountsByMacro[index]?.[sleeveIndex] ?? null;
+      const assetAmounts =
+        sleeveAmount == null
+          ? null
+          : distributeAmount(
+              sleeveAmount,
+              sleeve.micro.map((asset) => asset.weight),
+            );
+
+      return {
+        macro: bucket.macro,
+        macroLabel: MACRO_CLASS_LABEL[bucket.macro],
+        sleeveId: sleeve.id,
+        sleeveLabel: sleeve.label,
+        weight: sleeve.weight,
+        amount: sleeveAmount,
+        assets: sleeve.micro.map((asset, assetIndex) => ({
+          name: asset.name,
+          description: asset.description,
+          weight: asset.weight,
+          amount: assetAmounts?.[assetIndex] ?? null,
+          examples: microExamplesFor(sleeve.id),
+        })),
+      };
+    }),
   );
 
   const totalWeight =
