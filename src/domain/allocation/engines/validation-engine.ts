@@ -140,7 +140,7 @@ export function runValidationEngine(input: {
     detail: `Volatilidade-alvo de ${optimization.targetVolatility}% ao ano (faixa permitida ${volatilityControl.allowedRange.min}%–${volatilityControl.allowedRange.max}%).`,
   });
 
-  // 9) Renda variável: Brasil = 50% e Exterior = 50% da exposição em ações.
+  // 9) Classe Ações: Brasil = 50% e Exterior = 50% do peso total da classe.
   const brasil = weightOf(structure, "acoes_brasil");
   const exterior = weightOf(structure, "exterior");
   const equityTotal = round1(brasil + exterior);
@@ -151,18 +151,18 @@ export function runValidationEngine(input: {
         Math.abs(brasil - equityTotal / 2) <= 0.55 &&
         Math.abs(exterior - equityTotal / 2) <= 0.55;
   checks.push({
-    id: "renda_variavel_50_50",
-    label: "Renda variável dividida 50% Brasil / 50% Exterior",
+    id: "acoes_50_50",
+    label: "Classe Ações dividida 50% Brasil / 50% Exterior",
     severity: equitySplitOk ? "aprovado" : "reprovado",
     detail:
       equityTotal === 0
-        ? "A carteira não possui exposição a renda variável e nenhuma exposição foi criada artificialmente."
-        : `Renda variável total: ${round1(equityTotal)}% — Ações Brasil ${round1(brasil)}% e Ações Exterior ${round1(exterior)}%.${
+        ? "A carteira não possui exposição à classe Ações e nenhuma exposição foi criada artificialmente."
+        : `Classe Ações: ${round1(equityTotal)}% da carteira — Ações Brasil ${round1(brasil)}% e Ações Exterior ${round1(exterior)}%. FIIs e FI-Infra não entram neste cálculo.${
             optimization.equity.feasible ? "" : " " + optimization.equity.note
           }`,
   });
 
-  // 10) Política interna da classe de FIIs (40/40/15/5).
+  // 10) Política interna da classe de FIIs (40 Papel / 40 Tijolo / 15 Híbridos / 5 FI-Infra).
   const fiis = structure.macro.find((bucket) => bucket.macro === "fiis");
   const fiiDeviations = fiis
     ? FII_INTERNAL_POLICY.filter((rule) => {
@@ -173,7 +173,7 @@ export function runValidationEngine(input: {
     : [];
   checks.push({
     id: "fiis_distribuicao",
-    label: "Distribuição interna de FIIs (40/40/15/5)",
+    label: "Distribuição interna de FIIs (40 Papel / 40 Tijolo / 15 Híbridos / 5 FI-Infra)",
     severity: !fiis || fiiDeviations.length === 0 ? "aprovado" : "reprovado",
     detail: !fiis
       ? "A carteira não possui Fundos Imobiliários e nenhuma exposição foi criada artificialmente."
