@@ -4,9 +4,9 @@ import { presentStrategicPortfolio } from "@/application/portfolio/use-cases/pre
 import { EMPTY_DISCOVERY } from "@/application/profiling/dto/investor-profile.dto";
 
 const discoveries = [
-  { name: "conservador", behavioralScore: 15, d: { mainGoal: "preservacao", horizonYears: 3, liquidityNeed: "alta", monthlyIncome: 12000, monthlyExpenses: 8000, netWorth: 300000, dependents: 0, emergencyFundMonths: 8, jobStability: "alta", debtLevel: "baixo", investmentExperience: "iniciante" } },
-  { name: "moderado", behavioralScore: 50, d: { mainGoal: "crescimento", horizonYears: 8, liquidityNeed: "media", monthlyIncome: 30000, monthlyExpenses: 15000, netWorth: 900000, dependents: 1, emergencyFundMonths: 10, jobStability: "alta", debtLevel: "baixo", investmentExperience: "intermediario" } },
-  { name: "arrojado", behavioralScore: 90, d: { mainGoal: "crescimento", horizonYears: 20, liquidityNeed: "baixa", monthlyIncome: 80000, monthlyExpenses: 25000, netWorth: 4000000, dependents: 2, emergencyFundMonths: 18, jobStability: "alta", debtLevel: "baixo", investmentExperience: "avancado" } },
+  { name: "conservador", behavioralScore: 15, d: { mainGoal: "reserva_seguranca", horizonYears: 3, liquidityNeed: "alta", monthlyIncome: 12000, monthlyExpenses: 8000, netWorth: 300000, dependents: 0, emergencyReserve: "acima_de_seis_meses", age: 40, isRetired: false } },
+  { name: "moderado", behavioralScore: 50, d: { mainGoal: "crescimento_patrimonial", horizonYears: 8, liquidityNeed: "media", monthlyIncome: 30000, monthlyExpenses: 15000, netWorth: 900000, dependents: 1, emergencyReserve: "acima_de_seis_meses", age: 40, isRetired: false } },
+  { name: "arrojado", behavioralScore: 90, d: { mainGoal: "crescimento_patrimonial", horizonYears: 20, liquidityNeed: "baixa", monthlyIncome: 80000, monthlyExpenses: 25000, netWorth: 4000000, dependents: 2, emergencyReserve: "acima_de_seis_meses", age: 40, isRetired: false } },
 ];
 
 for (const c of discoveries) {
