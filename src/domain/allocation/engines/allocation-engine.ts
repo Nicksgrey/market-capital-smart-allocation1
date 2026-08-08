@@ -260,8 +260,8 @@ const TEMPLATES: Record<MacroClass, SleeveTemplate[]> = {
       micro: [{ name: "FIIs híbridos", description: "Papel e tijolo combinados" }],
     },
     {
-      id: "fii_agro",
-      label: "Agro",
+      id: "fii_infra",
+      label: "FI-Infra",
       liquidityBucket: "um_a_cinco_anos",
       country: "brasil",
       base: 5,
@@ -269,7 +269,12 @@ const TEMPLATES: Record<MacroClass, SleeveTemplate[]> = {
       taxBias: 2,
       fixedShareOfClass: 5,
       taxNote: "Rendimento isento na pessoa física",
-      micro: [{ name: "FIIs do agronegócio (Fiagro)", description: "Crédito e ativos do agro" }],
+      micro: [
+        {
+          name: "FI-Infra",
+          description: "Fundos de infraestrutura com crédito incentivado",
+        },
+      ],
     },
   ],
   alternativos: [

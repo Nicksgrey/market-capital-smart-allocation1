@@ -89,15 +89,15 @@ export function runOptimizationEngine(input: {
   // 6) Normalização para 100% respeitando as faixas da SAA.
   normalizeToBands(weights, bands);
 
-  // 7) Restrição de renda variável: 50% Brasil / 50% Exterior sobre o TOTAL
-  // destinado à classe de ações. A regra divide — nunca amplia — a exposição.
+  // 7) Restrição interna da CLASSE AÇÕES: 50% Brasil / 50% Exterior sobre o
+  // peso total de Ações. O total definido aqui é preservado integralmente e
+  // FIIs, FI-Infra e demais classes não entram neste cálculo.
   const equity = applyEquitySplit(weights, bands);
-  normalizeToBands(weights, bands);
   factors.push({
-    label: "Renda variável — Brasil e Exterior",
+    label: "Classe Ações — Brasil e Exterior",
     detail:
       equity.total > 0
-        ? `${EQUITY_SPLIT_POLICY.brasilShareOfEquity}% da exposição em ações em Brasil e ${EQUITY_SPLIT_POLICY.exteriorShareOfEquity}% no Exterior. ${equity.note}`
+        ? `${EQUITY_SPLIT_POLICY.brasilShareOfEquity}% da classe Ações em Brasil e ${EQUITY_SPLIT_POLICY.exteriorShareOfEquity}% no Exterior. ${equity.note}`
         : equity.note,
   });
 

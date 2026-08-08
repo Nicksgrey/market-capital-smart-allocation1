@@ -179,11 +179,11 @@ function buildRationales(input: {
 
   if (input.equity) {
     rationales.push(
-      `Sua exposição em ações de ${pct(input.equity.total)} foi distribuída entre Brasil (${pct(
+      `Sua exposição à classe Ações de ${pct(input.equity.total)} foi dividida em 50% Brasil (${pct(
         input.equity.brasil,
-      )}) e Exterior (${pct(
+      )}) e 50% Exterior (${pct(
         input.equity.exterior,
-      )}) para reduzir a concentração geográfica do patrimônio, ampliar a diversificação entre economias e setores e adicionar diversificação cambial à estratégia.`,
+      )}), preservando integralmente o peso total de Ações definido pelo motor. FIIs, FI-Infra e demais classes não entram neste cálculo. A divisão reduz a concentração geográfica do patrimônio, amplia a diversificação entre economias e setores e adiciona diversificação cambial à estratégia.`,
     );
     rationales.push(EQUITY_SPLIT_POLICY.rationale);
   }
