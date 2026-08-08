@@ -12,6 +12,7 @@ import {
   type PolicyDecision,
   type StructuredPortfolio,
 } from "../types";
+import { FII_INTERNAL_POLICY } from "../policies/fii-internal-rules";
 
 /**
  * ALLOCATION ENGINE — Macro → Meso → Micro.
@@ -34,6 +35,16 @@ interface SleeveTemplate {
   /** Ajuste relativo quando a eficiência tributária é priorizada. */
   taxBias: number;
   taxNote?: string;
+  /**
+   * Participação FIXA dentro da classe macro (% da classe), quando a política
+   * interna da classe define a distribuição — caso dos FIIs (40/40/15/5).
+   */
+  fixedShareOfClass?: number;
+  /**
+   * false quando a sub-classe permanece disponível no sistema de dados, mas não
+   * compõe a carteira recomendada padrão (caso de LCI/LCA).
+   */
+  defaultInclude?: boolean;
   micro: Array<{ name: string; description: string }>;
 }
 
@@ -89,9 +100,26 @@ const TEMPLATES: Record<MacroClass, SleeveTemplate[]> = {
       shortTermBias: 4,
       taxBias: 6,
       taxNote: "Isenta de IR na pessoa física",
+      // Mantida no sistema de dados para configurações futuras, mas fora da
+      // composição padrão da carteira recomendada.
+      defaultInclude: false,
       micro: [
         { name: "LCI indexada ao CDI", description: "Crédito bancário isento" },
         { name: "LCA prefixada", description: "Travamento de taxa" },
+      ],
+    },
+    {
+      id: "fi_infra",
+      label: "FI-Infra / Fundos de Infraestrutura",
+      liquidityBucket: "um_a_cinco_anos",
+      country: "brasil",
+      base: 13,
+      shortTermBias: -4,
+      taxBias: 6,
+      taxNote:
+        "Crédito incentivado isento de IR na PF, com marcação a mercado e liquidez própria",
+      micro: [
+        { name: "FI-Infra", description: "Debêntures incentivadas de infraestrutura" },
       ],
     },
     {
@@ -202,9 +230,10 @@ const TEMPLATES: Record<MacroClass, SleeveTemplate[]> = {
       label: "Papel",
       liquidityBucket: "d1_d30",
       country: "brasil",
-      base: 32,
+      base: 40,
       shortTermBias: 6,
       taxBias: 4,
+      fixedShareOfClass: 40,
       taxNote: "Rendimento isento na pessoa física",
       micro: [{ name: "FIIs de CRI", description: "Renda indexada" }],
     },
@@ -213,31 +242,34 @@ const TEMPLATES: Record<MacroClass, SleeveTemplate[]> = {
       label: "Tijolo",
       liquidityBucket: "um_a_cinco_anos",
       country: "brasil",
-      base: 38,
+      base: 40,
       shortTermBias: -2,
       taxBias: 2,
+      fixedShareOfClass: 40,
       micro: [{ name: "FIIs de lajes e logística", description: "Renda de aluguel" }],
-    },
-    {
-      id: "fii_infra",
-      label: "Infraestrutura",
-      liquidityBucket: "acima_cinco_anos",
-      country: "brasil",
-      base: 16,
-      shortTermBias: -4,
-      taxBias: 6,
-      taxNote: "Debêntures incentivadas via FI-Infra",
-      micro: [{ name: "FI-Infra", description: "Crédito isento indexado" }],
     },
     {
       id: "fii_hibrido",
       label: "Híbridos",
       liquidityBucket: "um_a_cinco_anos",
       country: "brasil",
-      base: 14,
+      base: 15,
       shortTermBias: 0,
       taxBias: 0,
+      fixedShareOfClass: 15,
       micro: [{ name: "FIIs híbridos", description: "Papel e tijolo combinados" }],
+    },
+    {
+      id: "fii_agro",
+      label: "Agro",
+      liquidityBucket: "um_a_cinco_anos",
+      country: "brasil",
+      base: 5,
+      shortTermBias: 0,
+      taxBias: 2,
+      fixedShareOfClass: 5,
+      taxNote: "Rendimento isento na pessoa física",
+      micro: [{ name: "FIIs do agronegócio (Fiagro)", description: "Crédito e ativos do agro" }],
     },
   ],
   alternativos: [
@@ -303,8 +335,13 @@ export function runAllocationEngine(input: {
     const weight = optimization.weights[macroClass];
     if (weight <= 0) continue;
 
-    const templates = TEMPLATES[macroClass];
+    const templates = TEMPLATES[macroClass].filter(
+      (template) => template.defaultInclude !== false,
+    );
     const scores = templates.map((template) => {
+      // Política interna fixa da classe (FIIs): a distribuição não depende de
+      // score, apenas reparte o peso definido pelo Optimization Engine.
+      if (template.fixedShareOfClass != null) return template.fixedShareOfClass;
       let score = template.base;
       if (shortTerm) score += template.shortTermBias;
       if (longTerm) score -= template.shortTermBias;
@@ -319,6 +356,7 @@ export function runAllocationEngine(input: {
         id: `${macroClass}:${template.id}`,
         label: template.label,
         weight: sleeveWeight,
+        shareOfClass: shareOf(sleeveWeight, weight),
         liquidityBucket: template.liquidityBucket,
         country: template.country,
         ...(template.taxNote ? { taxNote: template.taxNote } : {}),
@@ -357,14 +395,25 @@ function buildMicro(
 function reconcile(sleeves: MesoSleeve[], target: number): MesoSleeve[] {
   const total = sleeves.reduce((sum, s) => sum + s.weight, 0);
   const diff = round1(target - total);
-  if (diff === 0 || sleeves.length === 0) return sleeves;
-  const largest = sleeves.reduce((a, b) => (a.weight >= b.weight ? a : b));
-  largest.weight = round1(largest.weight + diff);
-  largest.micro = buildMicro(
-    largest.micro.map((m) => ({ name: m.name, description: m.description })),
-    largest.weight,
-  );
+  if (sleeves.length === 0) return sleeves;
+  if (diff !== 0) {
+    const largest = sleeves.reduce((a, b) => (a.weight >= b.weight ? a : b));
+    largest.weight = round1(largest.weight + diff);
+    largest.micro = buildMicro(
+      largest.micro.map((m) => ({ name: m.name, description: m.description })),
+      largest.weight,
+    );
+  }
+  for (const sleeve of sleeves) {
+    sleeve.shareOfClass = shareOf(sleeve.weight, target);
+  }
   return sleeves;
+}
+
+/** Participação da sub-classe dentro da classe macro (% da classe). */
+function shareOf(weight: number, classWeight: number): number {
+  if (classWeight <= 0) return 0;
+  return Math.round((weight / classWeight) * 1000) / 10;
 }
 
 function liquidityDistribution(

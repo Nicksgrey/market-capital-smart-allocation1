@@ -3,6 +3,7 @@ import { LIQUIDITY_BUCKET_LABEL } from "@/domain/allocation/types";
 import type { PortfolioPresentation } from "@/domain/portfolio/types";
 
 import { COUNTRY_LABEL, PortfolioWeightRow } from "../PortfolioUI";
+import { formatCurrency, formatPercent } from "../format";
 
 /** MESO — detalha cada classe macro em sub-classes. */
 export function MesoLevel({
@@ -24,7 +25,9 @@ export function MesoLevel({
       </h2>
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
         Cada grande classe é aberta em suas sub-classes, com o horizonte de
-        liquidez, a região e a observação tributária que justificam a posição.
+        liquidez, a região e a observação tributária que justificam a posição. Os
+        percentuais representam o peso na carteira total; a participação dentro
+        da classe é indicada separadamente.
       </p>
 
       <div className="mt-6 space-y-6">
@@ -34,8 +37,9 @@ export function MesoLevel({
             className="rounded-lg border border-border/60 p-5"
           >
             <PortfolioWeightRow
-              label={`${group.label} (${group.weight}%)`}
+              label={`${group.label} (${formatPercent(group.weight)})`}
               weight={group.weight}
+              amount={group.amount}
               emphasis
             />
             <ul className="mt-4 space-y-3">
@@ -43,10 +47,21 @@ export function MesoLevel({
                 <li key={sleeve.id} className="border-l border-border pl-4">
                   <div className="flex items-baseline justify-between gap-4">
                     <span className="text-sm font-medium">{sleeve.label}</span>
-                    <span className="font-display text-sm tabular-nums text-muted-foreground">
-                      {sleeve.weight}%
+                    <span className="flex items-baseline gap-3">
+                      <span className="font-display text-sm tabular-nums text-muted-foreground">
+                        {formatPercent(sleeve.weight)}
+                      </span>
+                      {sleeve.amount != null ? (
+                        <span className="text-sm tabular-nums">
+                          {formatCurrency(sleeve.amount)}
+                        </span>
+                      ) : null}
                     </span>
                   </div>
+                  <p className="text-xs text-accent">
+                    {formatPercent(sleeve.shareOfClass)} da classe ·{" "}
+                    {formatPercent(sleeve.weight)} da carteira
+                  </p>
                   <p className="text-xs text-muted-foreground">
                     {LIQUIDITY_BUCKET_LABEL[sleeve.liquidityBucket]} ·{" "}
                     {COUNTRY_LABEL[sleeve.country]}

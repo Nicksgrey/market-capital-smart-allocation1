@@ -59,6 +59,7 @@ export function buildAiAdvisorContext(
         classe: MACRO_CLASS_LABEL[bucket.macro],
         subClasse: sleeve.label,
         peso: sleeve.weight,
+        pesoDentroDaClasse: sleeve.shareOfClass,
       })),
     ),
     carteiraMicro: structure.macro.flatMap((bucket) =>
@@ -86,6 +87,13 @@ export function buildAiAdvisorContext(
         ],
       ),
     ),
+    rendaVariavel: {
+      total: optimization.equity.total,
+      brasil: optimization.equity.brasil,
+      exterior: optimization.equity.exterior,
+      regra: "50% da exposição total em ações no Brasil e 50% no Exterior.",
+      observacao: optimization.equity.note,
+    },
     politicas: {
       saa: `${policy.saa.family} — ${policy.saa.objective}`,
       diretrizesDoObjetivo: policy.goal.directives,

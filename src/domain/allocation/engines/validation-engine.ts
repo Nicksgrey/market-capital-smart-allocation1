@@ -8,6 +8,7 @@ import {
   type VolatilityControlDecision,
   type OptimizationResult,
 } from "../types";
+import { FII_INTERNAL_POLICY } from "../policies/fii-internal-rules";
 
 /**
  * VALIDATION ENGINE — auditoria da carteira.
@@ -139,6 +140,52 @@ export function runValidationEngine(input: {
     detail: `Volatilidade-alvo de ${optimization.targetVolatility}% ao ano (faixa permitida ${volatilityControl.allowedRange.min}%–${volatilityControl.allowedRange.max}%).`,
   });
 
+  // 9) Renda variável: Brasil = 50% e Exterior = 50% da exposição em ações.
+  const brasil = weightOf(structure, "acoes_brasil");
+  const exterior = weightOf(structure, "exterior");
+  const equityTotal = round1(brasil + exterior);
+  const equitySplitOk =
+    equityTotal === 0
+      ? true
+      : optimization.equity.feasible &&
+        Math.abs(brasil - equityTotal / 2) <= 0.55 &&
+        Math.abs(exterior - equityTotal / 2) <= 0.55;
+  checks.push({
+    id: "renda_variavel_50_50",
+    label: "Renda variável dividida 50% Brasil / 50% Exterior",
+    severity: equitySplitOk ? "aprovado" : "reprovado",
+    detail:
+      equityTotal === 0
+        ? "A carteira não possui exposição a renda variável e nenhuma exposição foi criada artificialmente."
+        : `Renda variável total: ${round1(equityTotal)}% — Ações Brasil ${round1(brasil)}% e Ações Exterior ${round1(exterior)}%.${
+            optimization.equity.feasible ? "" : " " + optimization.equity.note
+          }`,
+  });
+
+  // 10) Política interna da classe de FIIs (40/40/15/5).
+  const fiis = structure.macro.find((bucket) => bucket.macro === "fiis");
+  const fiiDeviations = fiis
+    ? FII_INTERNAL_POLICY.filter((rule) => {
+        const sleeve = fiis.sleeves.find((s) => s.id === `fiis:${rule.id}`);
+        if (!sleeve) return true;
+        return Math.abs(sleeve.shareOfClass - rule.shareOfClass) > 1.5;
+      })
+    : [];
+  checks.push({
+    id: "fiis_distribuicao",
+    label: "Distribuição interna de FIIs (40/40/15/5)",
+    severity: !fiis || fiiDeviations.length === 0 ? "aprovado" : "reprovado",
+    detail: !fiis
+      ? "A carteira não possui Fundos Imobiliários e nenhuma exposição foi criada artificialmente."
+      : fiiDeviations.length === 0
+        ? `FIIs em ${round1(fiis.weight)}% da carteira, distribuídos em ${fiis.sleeves
+            .map((s) => `${s.label} ${round1(s.shareOfClass)}% da classe (${round1(s.weight)}% da carteira)`)
+            .join(", ")}.`
+        : `Desvio na política interna de FIIs: ${fiiDeviations
+            .map((rule) => `${rule.label} deveria representar ${rule.shareOfClass}% da classe`)
+            .join("; ")}.`,
+  });
+
   const approved = checks.every((c) => c.severity !== "reprovado") && volOk;
 
   return {
@@ -152,4 +199,11 @@ export function runValidationEngine(input: {
 
 function round1(value: number): number {
   return Math.round(value * 10) / 10;
+}
+
+function weightOf(
+  structure: StructuredPortfolio,
+  macro: "acoes_brasil" | "exterior",
+): number {
+  return structure.macro.find((bucket) => bucket.macro === macro)?.weight ?? 0;
 }

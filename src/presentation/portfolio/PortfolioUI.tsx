@@ -9,6 +9,8 @@ import {
   type LiquidityBucket,
 } from "@/domain/allocation/types";
 
+import { formatCurrency, formatPercent } from "./format";
+
 export const COUNTRY_LABEL: Record<Country, string> = {
   brasil: "Brasil",
   estados_unidos: "Estados Unidos",
@@ -57,11 +59,13 @@ export function PortfolioWeightRow({
   weight,
   caption,
   emphasis,
+  amount,
 }: {
   label: string;
   weight: number;
   caption?: string;
   emphasis?: boolean;
+  amount?: number | null;
 }) {
   return (
     <div>
@@ -73,14 +77,40 @@ export function PortfolioWeightRow({
         >
           {label}
         </span>
-        <span className="font-display text-sm tabular-nums text-muted-foreground">
-          {weight}%
+        <span className="flex items-baseline gap-3">
+          <span className="font-display text-sm tabular-nums text-muted-foreground">
+            {formatPercent(weight)}
+          </span>
+          {amount != null ? (
+            <span className="text-sm tabular-nums text-foreground">
+              {formatCurrency(amount)}
+            </span>
+          ) : null}
         </span>
       </div>
       <Progress value={Math.min(weight, 100)} className="mt-2 h-2" />
       {caption ? (
         <p className="mt-1 text-xs text-muted-foreground">{caption}</p>
       ) : null}
+    </div>
+  );
+}
+
+/** Justificativas automáticas geradas com os dados reais da carteira. */
+export function RationaleCard({ rationales }: { rationales: string[] }) {
+  if (rationales.length === 0) return null;
+  return (
+    <div className="rounded-lg border border-border/60 bg-secondary/20 p-4">
+      <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+        Por que a carteira ficou assim
+      </p>
+      <ul className="mt-3 space-y-2">
+        {rationales.map((item) => (
+          <li key={item} className="text-xs leading-relaxed text-muted-foreground">
+            {item}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -34,11 +34,14 @@ export const MACRO_CLASS_ORDER: MacroClass[] = [
 export const MACRO_CLASS_LABEL: Record<MacroClass, string> = {
   renda_fixa: "Renda Fixa",
   acoes_brasil: "Ações Brasil",
-  exterior: "Exterior",
+  exterior: "Ações Exterior",
   fiis: "Fundos Imobiliários",
   alternativos: "Alternativos",
   caixa: "Caixa",
 };
+
+/** Classes que compõem a exposição total em renda variável (ações). */
+export const EQUITY_MACRO_CLASSES: MacroClass[] = ["acoes_brasil", "exterior"];
 
 /** Horizontes de liquidez usados pelas Regras de Liquidez. */
 export type LiquidityBucket = "d0" | "d1_d30" | "um_a_cinco_anos" | "acima_cinco_anos";
@@ -159,12 +162,33 @@ export interface OptimizationFactor {
   detail: string;
 }
 
+/**
+ * Exposição total em renda variável e sua divisão interna Brasil/Exterior.
+ * A divisão 50/50 é uma restrição de alocação: ela NUNCA aumenta a exposição
+ * total em ações, apenas reparte a exposição já determinada pelo motor.
+ */
+export interface EquityExposure {
+  /** Exposição total em ações após a aplicação da restrição. */
+  total: number;
+  brasil: number;
+  exterior: number;
+  /** Exposição total antes da restrição 50/50. */
+  requestedTotal: number;
+  /** true quando a exposição total precisou ser recalculada para caber nas faixas. */
+  adjusted: boolean;
+  /** false quando não existe combinação válida dentro dos limites da SAA. */
+  feasible: boolean;
+  note: string;
+}
+
 /** Saída do Optimization Engine: pesos macro finais (não vêm da SAA). */
 export interface OptimizationResult {
   targetVolatility: number;
   weights: Record<MacroClass, number>;
   bands: Partial<Record<MacroClass, AllocationBand>>;
   factors: OptimizationFactor[];
+  /** Divisão oficial da renda variável entre Brasil e Exterior. */
+  equity: EquityExposure;
 }
 
 export interface MicroAsset {
@@ -177,6 +201,8 @@ export interface MesoSleeve {
   id: string;
   label: string;
   weight: number;
+  /** Participação da sub-classe DENTRO da classe macro (% da classe). */
+  shareOfClass: number;
   liquidityBucket: LiquidityBucket;
   country: Country;
   taxNote?: string;

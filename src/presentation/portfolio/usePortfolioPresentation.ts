@@ -9,6 +9,10 @@ import { presentStrategicPortfolio } from "@/application/portfolio/use-cases/pre
 import { PORTFOLIO_LEVELS, type PortfolioLevel } from "@/domain/portfolio/types";
 import { loadAllocationHandoff } from "@/presentation/shared/allocation-handoff";
 import {
+  loadInvestedAmount,
+  saveInvestedAmount,
+} from "@/presentation/shared/invested-amount";
+import {
   loadProfilingHandoff,
   type ProfilingHandoff,
 } from "@/presentation/shared/profiling-handoff";
@@ -26,6 +30,8 @@ export function usePortfolioPresentation() {
   );
   const [educationalSimulation, setEducationalSimulation] = useState(false);
   const [level, setLevel] = useState<PortfolioLevel>("macro");
+  const [investedAmount, setInvestedAmountState] = useState<number | null>(null);
+  const [amountConfirmed, setAmountConfirmed] = useState(false);
 
   useEffect(() => {
     setProfilingHandoff(loadProfilingHandoff());
@@ -33,6 +39,11 @@ export function usePortfolioPresentation() {
     if (allocation) {
       setRequestedVolatility(allocation.requestedVolatility);
       setEducationalSimulation(allocation.educationalSimulation);
+    }
+    const stored = loadInvestedAmount();
+    if (stored != null) {
+      setInvestedAmountState(stored);
+      setAmountConfirmed(true);
     }
     setHydrated(true);
   }, []);
@@ -58,8 +69,8 @@ export function usePortfolioPresentation() {
 
   const presentation = useMemo(() => {
     if (!profile || !portfolio) return null;
-    return presentStrategicPortfolio({ profile, portfolio });
-  }, [profile, portfolio]);
+    return presentStrategicPortfolio({ profile, portfolio, investedAmount });
+  }, [profile, portfolio, investedAmount]);
 
   const levelIndex = PORTFOLIO_LEVELS.indexOf(level);
 
@@ -67,6 +78,13 @@ export function usePortfolioPresentation() {
     hydrated,
     profile,
     presentation,
+    investedAmount,
+    amountConfirmed,
+    setInvestedAmount: (value: number | null) => {
+      setInvestedAmountState(value);
+      saveInvestedAmount(value);
+    },
+    confirmAmount: () => setAmountConfirmed(true),
     level,
     levels: PORTFOLIO_LEVELS,
     setLevel,

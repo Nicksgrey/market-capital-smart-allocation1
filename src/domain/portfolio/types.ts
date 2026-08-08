@@ -20,6 +20,8 @@ export interface MacroView {
   macro: MacroClass;
   label: string;
   weight: number;
+  /** Valor financeiro correspondente ao percentual (null sem valor informado). */
+  amount: number | null;
 }
 
 /** Uma sub-classe apresentada dentro de uma classe macro (nível MESO). */
@@ -27,6 +29,9 @@ export interface MesoView {
   id: string;
   label: string;
   weight: number;
+  /** Participação DENTRO da classe macro (% da classe). */
+  shareOfClass: number;
+  amount: number | null;
   liquidityBucket: LiquidityBucket;
   country: Country;
   taxNote?: string;
@@ -37,6 +42,7 @@ export interface MesoGroupView {
   macro: MacroClass;
   label: string;
   weight: number;
+  amount: number | null;
   sleeves: MesoView[];
 }
 
@@ -45,6 +51,7 @@ export interface MicroView {
   name: string;
   description: string;
   weight: number;
+  amount: number | null;
   /** Exemplos educacionais (tickers/títulos) da metodologia do curso. */
   examples: string[];
 }
@@ -56,7 +63,18 @@ export interface MicroGroupView {
   sleeveId: string;
   sleeveLabel: string;
   weight: number;
+  amount: number | null;
   assets: MicroView[];
+}
+
+/** Resumo da renda variável (percentual + valor) para leitura do investidor. */
+export interface EquitySummaryView {
+  total: number;
+  brasil: number;
+  exterior: number;
+  totalAmount: number | null;
+  brasilAmount: number | null;
+  exteriorAmount: number | null;
 }
 
 /** Níveis de exibição da Camada 3. */
@@ -82,9 +100,17 @@ export interface PortfolioPresentation {
   macro: MacroView[];
   meso: MesoGroupView[];
   micro: MicroGroupView[];
+  /** Valor financeiro informado pelo investidor (parâmetro de apresentação). */
+  investedAmount: number | null;
+  /** Renda variável total e sua divisão Brasil/Exterior. */
+  equity: EquitySummaryView | null;
+  /** Justificativas automáticas geradas a partir dos dados reais da carteira. */
+  rationales: string[];
   liquidityDistribution: Record<LiquidityBucket, number>;
   countryDistribution: Record<Country, number>;
   totalWeight: number;
+  /** Soma dos valores financeiros (deve fechar com o valor informado). */
+  totalAmount: number | null;
   /** Aviso obrigatório sobre o caráter educacional do nível micro. */
   microDisclaimer: string;
   /** Mensagem de conclusão da Camada 3. */

@@ -2,6 +2,10 @@ import { Button } from "@/components/ui/button";
 
 import { LevelTabs } from "./PortfolioUI";
 import { PortfolioConclusion } from "./PortfolioConclusion";
+import {
+  InvestedAmountBar,
+  InvestedAmountStep,
+} from "./InvestedAmountPanel";
 import { MacroLevel } from "./levels/MacroLevel";
 import { MesoLevel } from "./levels/MesoLevel";
 import { MicroLevel } from "./levels/MicroLevel";
@@ -87,6 +91,23 @@ export function PortfolioView({
         ) : null}
       </section>
 
+      {!view.amountConfirmed ? (
+        <InvestedAmountStep
+          initialValue={view.investedAmount}
+          onConfirm={(value) => {
+            view.setInvestedAmount(value);
+            view.confirmAmount();
+          }}
+        />
+      ) : (
+        <InvestedAmountBar
+          value={view.investedAmount}
+          onChange={view.setInvestedAmount}
+        />
+      )}
+
+      {view.amountConfirmed ? (
+        <>
       <LevelTabs
         levels={view.levels}
         current={view.level}
@@ -114,6 +135,8 @@ export function PortfolioView({
         onAnalyze={onAnalyze}
         {...(analysisMessage ? { message: analysisMessage } : {})}
       />
+        </>
+      ) : null}
     </div>
   );
 }

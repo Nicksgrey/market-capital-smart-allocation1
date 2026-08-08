@@ -37,8 +37,20 @@ export interface AiAdvisorContext {
     status: string;
   };
   carteiraMacro: Array<{ classe: string; peso: number }>;
-  carteiraMeso: Array<{ classe: string; subClasse: string; peso: number }>;
+  carteiraMeso: Array<{
+    classe: string;
+    subClasse: string;
+    peso: number;
+    pesoDentroDaClasse: number;
+  }>;
   carteiraMicro: Array<{ subClasse: string; ativo: string; peso: number }>;
+  rendaVariavel: {
+    total: number;
+    brasil: number;
+    exterior: number;
+    regra: string;
+    observacao: string;
+  };
   distribuicaoDeLiquidez: Record<string, number>;
   distribuicaoGeografica: Record<string, number>;
   politicas: {

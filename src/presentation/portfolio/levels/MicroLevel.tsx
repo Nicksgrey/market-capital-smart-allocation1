@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import type { PortfolioPresentation } from "@/domain/portfolio/types";
 
+import { formatCurrency, formatPercent } from "../format";
+
 /** MICRO — apresenta os ativos específicos (sugestão educacional). */
 export function MicroLevel({
   presentation,
@@ -46,8 +48,15 @@ export function MicroLevel({
                     <span className="text-sm font-medium uppercase tracking-[0.08em]">
                       {group.sleeveLabel}
                     </span>
-                    <span className="font-display text-sm tabular-nums text-muted-foreground">
-                      {group.weight}%
+                    <span className="flex items-baseline gap-3">
+                      <span className="font-display text-sm tabular-nums text-muted-foreground">
+                        {formatPercent(group.weight)}
+                      </span>
+                      {group.amount != null ? (
+                        <span className="text-sm tabular-nums">
+                          {formatCurrency(group.amount)}
+                        </span>
+                      ) : null}
                     </span>
                   </div>
                   <ul className="mt-3 space-y-2">
@@ -62,8 +71,15 @@ export function MicroLevel({
                             {asset.description}
                           </p>
                         </div>
-                        <span className="text-xs tabular-nums text-muted-foreground">
-                          {asset.weight}%
+                        <span className="flex items-baseline gap-3">
+                          <span className="text-xs tabular-nums text-muted-foreground">
+                            {formatPercent(asset.weight)}
+                          </span>
+                          {asset.amount != null ? (
+                            <span className="text-xs tabular-nums">
+                              {formatCurrency(asset.amount)}
+                            </span>
+                          ) : null}
                         </span>
                       </li>
                     ))}
