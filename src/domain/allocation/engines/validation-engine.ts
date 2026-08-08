@@ -156,7 +156,9 @@ export function runValidationEngine(input: {
   });
 
   // 8) Volatilidade máxima permitida — regra obrigatória.
-  const volBlocking = volatilityControl.status === "reprovada";
+  const volBlocking =
+    volatilityControl.status === "acima_do_permitido" ||
+    volatilityControl.status === "bloqueada";
   checks.push({
     id: "volatilidade",
     label: "Respeitou a volatilidade máxima permitida",
