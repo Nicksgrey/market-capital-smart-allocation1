@@ -6,9 +6,9 @@ import { test } from "vitest";
 test("audit", () => {
 
 const cases = [
-  { name: "conservador", behavioralScore: 15, horizonYears: 3, mainGoal: "preservacao", liquidityNeed: "alta" },
-  { name: "moderado", behavioralScore: 50, horizonYears: 8, mainGoal: "crescimento", liquidityNeed: "media" },
-  { name: "arrojado", behavioralScore: 90, horizonYears: 20, mainGoal: "crescimento", liquidityNeed: "baixa" },
+  { name: "conservador", behavioralScore: 15, horizonYears: 3, mainGoal: "reserva_seguranca", liquidityNeed: "alta" },
+  { name: "moderado", behavioralScore: 50, horizonYears: 8, mainGoal: "aposentadoria", liquidityNeed: "media" },
+  { name: "arrojado", behavioralScore: 90, horizonYears: 20, mainGoal: "crescimento_patrimonial", liquidityNeed: "baixa" },
 ] as const;
 
 let fails = 0;
