@@ -9,6 +9,11 @@ import type { PortfolioPresentation } from "@/domain/portfolio/types";
 export interface PresentStrategicPortfolioInput {
   profile: InvestorProfileConsolidation;
   portfolio: StrategicPortfolio;
+  /**
+   * Valor financeiro informado pelo investidor. É EXCLUSIVAMENTE um parâmetro
+   * de apresentação: não altera nenhum percentual calculado pelo motor.
+   */
+  investedAmount?: number | null;
 }
 
 export type PresentStrategicPortfolioOutput = PortfolioPresentation;
