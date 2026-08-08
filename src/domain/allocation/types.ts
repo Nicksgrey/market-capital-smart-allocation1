@@ -230,12 +230,22 @@ export interface ValidationCheck {
   label: string;
   severity: ValidationSeverity;
   detail: string;
+  /**
+   * true quando a regra é OBRIGATÓRIA: sua violação é um ERRO BLOQUEANTE e
+   * reprova a carteira. false quando a regra é de qualidade: sua violação
+   * gera apenas WARNING (ponto de atenção não bloqueante).
+   */
+  mandatory: boolean;
 }
 
 /** Saída do Validation Engine: auditoria da carteira. */
 export interface ValidationReport {
   approved: boolean;
   checks: ValidationCheck[];
+  /** Violações de regras obrigatórias — reprovam a carteira. */
+  blockingErrors: ValidationCheck[];
+  /** Pontos de atenção não bloqueantes, insumo do Diagnóstico Inteligente. */
+  warnings: ValidationCheck[];
   summary: string;
 }
 
