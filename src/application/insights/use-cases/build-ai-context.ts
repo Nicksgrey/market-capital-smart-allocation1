@@ -117,6 +117,11 @@ export function buildAiAdvisorContext(
     validationEngine: {
       aprovada: validation.approved,
       resumo: validation.summary,
+      errosBloqueantes: validation.blockingErrors.map((check) => check.label),
+      pontosDeAtencao: validation.warnings.map((check) => ({
+        item: check.label,
+        detalhe: check.detail,
+      })),
     },
     apenasEducacional: portfolio.educationalOnly,
   };
