@@ -12,6 +12,7 @@ export const MICRO_EXAMPLES: Record<string, string[]> = {
   "renda_fixa:tesouro_ipca": ["Tesouro IPCA+ 2035"],
   "renda_fixa:debentures_incentivadas": ["Debêntures incentivadas de infraestrutura"],
   "renda_fixa:lci_lca": ["LCI/LCA de bancos de primeira linha"],
+  "renda_fixa:fi_infra": ["FI-Infra / fundos de debêntures incentivadas"],
   "renda_fixa:credito_privado": ["CDB de liquidez diária"],
 
   "acoes_brasil:dividendos": ["BBAS3", "TAEE11"],
@@ -27,7 +28,7 @@ export const MICRO_EXAMPLES: Record<string, string[]> = {
   "fiis:fii_papel": ["KNSC11", "RBRR11"],
   "fiis:fii_tijolo": ["HGLG11", "BTLG11"],
   "fiis:fii_hibrido": ["FIIs híbridos"],
-  "fiis:fii_infra": ["FI-Infra"],
+  "fiis:fii_agro": ["Fiagro de crédito e ativos do agronegócio"],
 
   "alternativos:multiestrategia": ["Fundos multiestratégia"],
   "alternativos:ouro_cambio": ["ETF de ouro"],
