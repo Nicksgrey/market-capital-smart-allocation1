@@ -1,0 +1,1 @@
+- [ ] Orientar configuração DNS do subdomínio bussola no Registro.br e concluir conexão
