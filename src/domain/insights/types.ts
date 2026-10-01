@@ -172,7 +172,6 @@ export type EscalationTriggerId =
   | "geracao_de_renda"
   | "aposentadoria"
   | "investimentos_internacionais"
-  | "duvidas_recorrentes"
   | "indecisao_de_volatilidade"
   | "multiplas_simulacoes"
   | "carteira_sofisticada"
@@ -195,7 +194,7 @@ export interface EscalationSuggestion {
   triggers: EscalationTrigger[];
 }
 
-/** Sinais de interação usados pelos gatilhos. */
+/** Sinais de interação usados pelos gatilhos dos módulos ativos. */
 export interface InteractionSignals {
   volatilityChanges: number;
   goalSimulations: number;

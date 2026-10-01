@@ -167,9 +167,7 @@ export function runNextStepsEngine(input: {
     });
   }
 
-  const origin: EscalationOrigin =
-    input.origin ??
-    (signals.volatilityChanges >= 3 ? "diagnostico" : "diagnostico");
+  const origin: EscalationOrigin = input.origin ?? "diagnostico";
 
   return {
     origin,
