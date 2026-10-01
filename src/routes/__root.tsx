@@ -43,8 +43,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
-  const errorMessage =
-    error instanceof Error ? error.message : "Unexpected application error";
+  const errorMessage = error instanceof Error ? error.message : "Unexpected application error";
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -86,15 +85,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Motor Inteligente de Alocação Patrimonial | Market Capital" },
       {
         name: "description",
-        content:
-          "Plataforma da Market Capital para alocação patrimonial inteligente.",
+        content: "Plataforma da Market Capital para alocação patrimonial inteligente.",
       },
       { name: "author", content: "Market Capital" },
       { property: "og:title", content: "Motor Inteligente de Alocação Patrimonial" },
       {
         property: "og:description",
-        content:
-          "Plataforma da Market Capital para alocação patrimonial inteligente.",
+        content: "Plataforma da Market Capital para alocação patrimonial inteligente.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
