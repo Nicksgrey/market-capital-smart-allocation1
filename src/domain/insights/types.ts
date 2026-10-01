@@ -79,12 +79,7 @@ export type StressScenarioId =
   | "cenarios_geopoliticos";
 
 /** Comportamento esperado, em linguagem de setas (uso educacional). */
-export type StressDirection =
-  | "forte_queda"
-  | "queda"
-  | "neutro"
-  | "alta"
-  | "forte_alta";
+export type StressDirection = "forte_queda" | "queda" | "neutro" | "alta" | "forte_alta";
 
 export const STRESS_DIRECTION_ARROW: Record<StressDirection, string> = {
   forte_queda: "▼▼▼",
@@ -152,10 +147,7 @@ export interface StressTestReport {
 
 /** Ações do módulo "Próximos Passos". */
 export type NextStepAction =
-  | "revisar_carteira"
-  | "alterar_volatilidade"
-  | "gerar_outra_estrategia"
-  | "analise_personalizada";
+  "revisar_carteira" | "alterar_volatilidade" | "gerar_outra_estrategia" | "analise_personalizada";
 
 export interface NextStep {
   action: NextStepAction;
@@ -214,16 +206,9 @@ export interface PostAllocationAnalysis {
 }
 
 /** Etapas apresentadas na Camada 4, na ordem oficial. */
-export type InsightStage =
-  | "diagnostico"
-  | "stress_test"
-  | "proximos_passos";
+export type InsightStage = "diagnostico" | "stress_test" | "proximos_passos";
 
-export const INSIGHT_STAGES: InsightStage[] = [
-  "diagnostico",
-  "stress_test",
-  "proximos_passos",
-];
+export const INSIGHT_STAGES: InsightStage[] = ["diagnostico", "stress_test", "proximos_passos"];
 
 export const INSIGHT_STAGE_LABEL: Record<InsightStage, string> = {
   diagnostico: "Diagnóstico Inteligente",

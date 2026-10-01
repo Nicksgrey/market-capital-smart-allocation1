@@ -9,14 +9,9 @@ import { runNextStepsEngine, NEXT_STEPS } from "@/domain/insights/engines/next-s
 import { runStressTestEngine } from "@/domain/insights/engines/stress-test-engine";
 import { EMPTY_INTERACTION_SIGNALS } from "@/domain/insights/types";
 
-import type {
-  AnalyzePortfolioInput,
-  AnalyzePortfolioOutput,
-} from "../dto/insights.dto";
+import type { AnalyzePortfolioInput, AnalyzePortfolioOutput } from "../dto/insights.dto";
 
-export function analyzePortfolio(
-  input: AnalyzePortfolioInput,
-): AnalyzePortfolioOutput {
+export function analyzePortfolio(input: AnalyzePortfolioInput): AnalyzePortfolioOutput {
   const { profile, portfolio } = input;
   const signals = input.signals ?? EMPTY_INTERACTION_SIGNALS;
 

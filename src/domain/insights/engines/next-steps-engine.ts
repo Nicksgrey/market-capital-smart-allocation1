@@ -41,8 +41,7 @@ export const NEXT_STEPS: NextStep[] = [
   {
     action: "gerar_outra_estrategia",
     label: "Quero gerar outra estratégia",
-    description:
-      "Reconstrói toda a carteira percorrendo novamente os motores da Camada 2.",
+    description: "Reconstrói toda a carteira percorrendo novamente os motores da Camada 2.",
     destination: "Camada 2 — Inteligência de Alocação",
   },
   {
@@ -54,19 +53,18 @@ export const NEXT_STEPS: NextStep[] = [
   },
 ];
 
-const MESSAGES: Record<EscalationOrigin, { message: string; ctaLabel: string }> =
-  {
-    diagnostico: {
-      message:
-        "Sua carteira está alinhada ao seu perfil e aos dados informados. Caso você queira validar essa estratégia considerando aspectos que uma plataforma educacional não consegue avaliar integralmente — como patrimônio completo, planejamento tributário, fluxo de caixa, sucessão patrimonial ou decisões familiares — você pode conversar com um especialista da Market Capital. Uma análise personalizada permite adaptar a estratégia às suas necessidades específicas.",
-      ctaLabel: "Agendar uma Análise Estratégica",
-    },
-    stress_test: {
-      message:
-        "Sua carteira apresentou boa resiliência nos cenários simulados. Se você deseja construir um planejamento patrimonial mais completo — incluindo aposentadoria, sucessão, otimização tributária e acompanhamento contínuo — a Market Capital oferece um processo consultivo personalizado.",
-      ctaLabel: "Conhecer a Consultoria",
-    },
-  };
+const MESSAGES: Record<EscalationOrigin, { message: string; ctaLabel: string }> = {
+  diagnostico: {
+    message:
+      "Sua carteira está alinhada ao seu perfil e aos dados informados. Caso você queira validar essa estratégia considerando aspectos que uma plataforma educacional não consegue avaliar integralmente — como patrimônio completo, planejamento tributário, fluxo de caixa, sucessão patrimonial ou decisões familiares — você pode conversar com um especialista da Market Capital. Uma análise personalizada permite adaptar a estratégia às suas necessidades específicas.",
+    ctaLabel: "Agendar uma Análise Estratégica",
+  },
+  stress_test: {
+    message:
+      "Sua carteira apresentou boa resiliência nos cenários simulados. Se você deseja construir um planejamento patrimonial mais completo — incluindo aposentadoria, sucessão, otimização tributária e acompanhamento contínuo — a Market Capital oferece um processo consultivo personalizado.",
+    ctaLabel: "Conhecer a Consultoria",
+  },
+};
 
 export function runNextStepsEngine(input: {
   profile: InvestorProfileConsolidation;
@@ -107,10 +105,7 @@ export function runNextStepsEngine(input: {
     });
   }
 
-  if (
-    profile.discovery.dependents > 0 &&
-    (profile.discovery.horizonYears ?? 0) >= 10
-  ) {
+  if (profile.discovery.dependents > 0 && (profile.discovery.horizonYears ?? 0) >= 10) {
     triggers.push({
       id: "objetivo_complexo",
       label: "Objetivos financeiros complexos",
@@ -128,10 +123,7 @@ export function runNextStepsEngine(input: {
     });
   }
 
-  const sleeves = portfolio.structure.macro.reduce(
-    (n, bucket) => n + bucket.sleeves.length,
-    0,
-  );
+  const sleeves = portfolio.structure.macro.reduce((n, bucket) => n + bucket.sleeves.length, 0);
   if (sleeves >= 10) {
     triggers.push({
       id: "carteira_sofisticada",
@@ -153,8 +145,7 @@ export function runNextStepsEngine(input: {
     triggers.push({
       id: "multiplas_simulacoes",
       label: "Múltiplas simulações de objetivo",
-      reason:
-        "Simular vários objetivos indica que a estratégia de vida ainda está sendo definida.",
+      reason: "Simular vários objetivos indica que a estratégia de vida ainda está sendo definida.",
     });
   }
 
@@ -178,8 +169,10 @@ export function runNextStepsEngine(input: {
   };
 }
 
-export function escalationMessageFor(
-  origin: EscalationOrigin,
-): { message: string; ctaLabel: string; ctaUrl: string } {
+export function escalationMessageFor(origin: EscalationOrigin): {
+  message: string;
+  ctaLabel: string;
+  ctaUrl: string;
+} {
   return { ...MESSAGES[origin], ctaUrl: CONSULTING_SCHEDULING_URL };
 }

@@ -29,16 +29,13 @@ function InsightsPage() {
     <AppShell>
       <div className="space-y-6 pb-16">
         <header>
-          <p className="text-xs uppercase tracking-[0.2em] text-accent">
-            Camada 4
-          </p>
+          <p className="text-xs uppercase tracking-[0.2em] text-accent">Camada 4</p>
           <h1 className="mt-2 font-display text-2xl font-semibold sm:text-3xl">
             Inteligência Pós-Alocação
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Interpretar, explicar, testar e educar sobre a carteira gerada. Esta
-            camada não altera a alocação: consome apenas a carteira aprovada
-            pelo Validation Engine.
+            Interpretar, explicar, testar e educar sobre a carteira gerada. Esta camada não altera a
+            alocação: consome apenas a carteira aprovada pelo Validation Engine.
           </p>
         </header>
 
@@ -47,10 +44,7 @@ function InsightsPage() {
             void navigate({ to: "/carteira" });
           }}
           onNextStep={(action) => {
-            if (
-              action === "revisar_carteira" ||
-              action === "alterar_volatilidade"
-            ) {
+            if (action === "revisar_carteira" || action === "alterar_volatilidade") {
               void navigate({ to: "/perfilamento" });
               return;
             }

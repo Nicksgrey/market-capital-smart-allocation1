@@ -25,11 +25,8 @@ import {
  */
 export function useInsightsFlow() {
   const [hydrated, setHydrated] = useState(false);
-  const [profilingHandoff, setProfilingHandoff] =
-    useState<ProfilingHandoff | null>(null);
-  const [requestedVolatility, setRequestedVolatility] = useState<number | null>(
-    null,
-  );
+  const [profilingHandoff, setProfilingHandoff] = useState<ProfilingHandoff | null>(null);
+  const [requestedVolatility, setRequestedVolatility] = useState<number | null>(null);
   const [educationalSimulation, setEducationalSimulation] = useState(false);
   const [stage, setStage] = useState<InsightStage>("diagnostico");
   const [signals, setSignals] = useState<InteractionSignals>({
