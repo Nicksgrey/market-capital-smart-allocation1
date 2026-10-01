@@ -26,7 +26,7 @@ const modules: Array<{
 function useModuleTitle() {
   const { pathname } = useLocation();
   const titles: Record<string, string> = {
-    "/": "Visão Geral do Patrimônio",
+    "/": "Bússola do Investidor PRO",
     "/perfilamento": "Perfilamento do Investidor",
     "/alocacao": "Inteligência de Alocação",
     "/carteira": "Carteira Estratégica",
