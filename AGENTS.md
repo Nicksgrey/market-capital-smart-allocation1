@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- The post-allocation flow contains only Diagnostic, Stress Test, and Next Steps; the Financial AI module must not be restored because the user removed it.

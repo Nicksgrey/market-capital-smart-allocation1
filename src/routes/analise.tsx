@@ -6,7 +6,7 @@ import { AppShell } from "@/presentation/layout/AppShell";
 
 const title = "Inteligência Pós-Alocação | Motor Inteligente de Alocação";
 const description =
-  "Camada 4 do Motor Inteligente de Alocação Patrimonial: diagnóstico inteligente, stress test histórico, IA Financeira educacional e próximos passos da estratégia.";
+  "Camada 4 do Motor Inteligente de Alocação Patrimonial: diagnóstico inteligente, stress test histórico e próximos passos da estratégia.";
 
 export const Route = createFileRoute("/analise")({
   head: () => ({

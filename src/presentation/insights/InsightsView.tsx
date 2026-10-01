@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import type { NextStepAction } from "@/domain/insights/types";
 
 import { InsightsStepper } from "./InsightsUI";
-import { AiAdvisorPanel } from "./panels/AiAdvisorPanel";
 import { DiagnosticPanel } from "./panels/DiagnosticPanel";
 import { NextStepsPanel } from "./panels/NextStepsPanel";
 import { StressTestPanel } from "./panels/StressTestPanel";
@@ -10,7 +9,7 @@ import { useInsightsFlow } from "./useInsightsFlow";
 
 /**
  * CAMADA 4 — INTELIGÊNCIA PÓS-ALOCAÇÃO.
- * Diagnóstico Inteligente → Stress Test → IA Financeira → Próximos Passos.
+ * Diagnóstico Inteligente → Stress Test → Próximos Passos.
  */
 export function InsightsView({
   onBackToPortfolio,
@@ -44,7 +43,7 @@ export function InsightsView({
     );
   }
 
-  const { analysis, portfolio, profile } = flow;
+  const { analysis } = flow;
 
   return (
     <div className="space-y-6">
@@ -60,14 +59,6 @@ export function InsightsView({
 
       {flow.stage === "stress_test" ? (
         <StressTestPanel report={analysis.stressTest} />
-      ) : null}
-
-      {flow.stage === "ia_financeira" ? (
-        <AiAdvisorPanel
-          profile={profile}
-          portfolio={portfolio}
-          onQuestionAsked={flow.registerAiQuestion}
-        />
       ) : null}
 
       {flow.stage === "proximos_passos" ? (

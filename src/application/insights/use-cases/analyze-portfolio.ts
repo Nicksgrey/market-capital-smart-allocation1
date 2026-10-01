@@ -1,10 +1,8 @@
 /**
  * CAMADA 4 — INTELIGÊNCIA PÓS-ALOCAÇÃO (orquestração oficial).
  *
- * Sequência do documento: Diagnóstico Inteligente → Stress Test →
- * IA Financeira → Próximos Passos. A IA Financeira é interativa e vive em
- * `src/lib/insights.functions.ts`; este caso de uso orquestra os módulos
- * determinísticos e consome APENAS a carteira aprovada pelo Validation Engine.
+ * Sequência ativa: Diagnóstico Inteligente → Stress Test → Próximos Passos.
+ * Este caso de uso consome APENAS a carteira aprovada pelo Validation Engine.
  */
 import { runDiagnosticEngine } from "@/domain/insights/engines/diagnostic-engine";
 import { runNextStepsEngine, NEXT_STEPS } from "@/domain/insights/engines/next-steps-engine";

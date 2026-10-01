@@ -185,7 +185,7 @@ export interface EscalationTrigger {
 }
 
 /** Origem da sugestão contextual (define a mensagem oficial exibida). */
-export type EscalationOrigin = "diagnostico" | "ia_financeira" | "stress_test";
+export type EscalationOrigin = "diagnostico" | "stress_test";
 
 export interface EscalationSuggestion {
   origin: EscalationOrigin;
@@ -197,13 +197,11 @@ export interface EscalationSuggestion {
 
 /** Sinais de interação usados pelos gatilhos. */
 export interface InteractionSignals {
-  aiQuestions: number;
   volatilityChanges: number;
   goalSimulations: number;
 }
 
 export const EMPTY_INTERACTION_SIGNALS: InteractionSignals = {
-  aiQuestions: 0,
   volatilityChanges: 0,
   goalSimulations: 0,
 };
@@ -220,20 +218,17 @@ export interface PostAllocationAnalysis {
 export type InsightStage =
   | "diagnostico"
   | "stress_test"
-  | "ia_financeira"
   | "proximos_passos";
 
 export const INSIGHT_STAGES: InsightStage[] = [
   "diagnostico",
   "stress_test",
-  "ia_financeira",
   "proximos_passos",
 ];
 
 export const INSIGHT_STAGE_LABEL: Record<InsightStage, string> = {
   diagnostico: "Diagnóstico Inteligente",
   stress_test: "Stress Test",
-  ia_financeira: "IA Financeira",
   proximos_passos: "Próximos Passos",
 };
 

@@ -6,7 +6,7 @@
  *
  * Identifica situações de complexidade que justificam orientação especializada
  * e devolve uma sugestão CONTEXTUAL, cuja mensagem depende do momento em que o
- * investidor está (diagnóstico, IA Financeira ou stress test).
+ * investidor está (diagnóstico ou stress test).
  */
 import type { StrategicPortfolio } from "@/domain/allocation/types";
 import type { InvestorProfileConsolidation } from "@/domain/profiling/types";
@@ -60,11 +60,6 @@ const MESSAGES: Record<EscalationOrigin, { message: string; ctaLabel: string }> 
       message:
         "Sua carteira está alinhada ao seu perfil e aos dados informados. Caso você queira validar essa estratégia considerando aspectos que uma plataforma educacional não consegue avaliar integralmente — como patrimônio completo, planejamento tributário, fluxo de caixa, sucessão patrimonial ou decisões familiares — você pode conversar com um especialista da Market Capital. Uma análise personalizada permite adaptar a estratégia às suas necessidades específicas.",
       ctaLabel: "Agendar uma Análise Estratégica",
-    },
-    ia_financeira: {
-      message:
-        "Percebi que você está explorando diferentes cenários para encontrar a melhor estratégia. A IA consegue explicar como o motor de alocação funciona, mas algumas decisões dependem do contexto individual de cada investidor. Se desejar aprofundar sua estratégia patrimonial, você pode solicitar uma análise personalizada com a equipe da Market Capital.",
-      ctaLabel: "Quero falar com um especialista",
     },
     stress_test: {
       message:
@@ -145,15 +140,6 @@ export function runNextStepsEngine(input: {
     });
   }
 
-  if (signals.aiQuestions >= 4) {
-    triggers.push({
-      id: "duvidas_recorrentes",
-      label: "Dúvidas recorrentes sobre a carteira",
-      reason:
-        "Várias perguntas sobre os mesmos temas indicam necessidade de orientação individual.",
-    });
-  }
-
   if (signals.volatilityChanges >= 3) {
     triggers.push({
       id: "indecisao_de_volatilidade",
@@ -183,9 +169,7 @@ export function runNextStepsEngine(input: {
 
   const origin: EscalationOrigin =
     input.origin ??
-    (signals.aiQuestions >= 4 || signals.volatilityChanges >= 3
-      ? "ia_financeira"
-      : "diagnostico");
+    (signals.volatilityChanges >= 3 ? "diagnostico" : "diagnostico");
 
   return {
     origin,
