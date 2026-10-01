@@ -1,1 +1,2 @@
 - [ ] Orientar configuração DNS do subdomínio bussola no Registro.br e concluir conexão
+- [x] Remover a IA Financeira sem alterar Diagnóstico, Stress Test ou Próximos Passos

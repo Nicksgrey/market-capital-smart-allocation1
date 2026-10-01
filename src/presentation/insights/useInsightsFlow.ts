@@ -25,15 +25,11 @@ import {
  */
 export function useInsightsFlow() {
   const [hydrated, setHydrated] = useState(false);
-  const [profilingHandoff, setProfilingHandoff] =
-    useState<ProfilingHandoff | null>(null);
-  const [requestedVolatility, setRequestedVolatility] = useState<number | null>(
-    null,
-  );
+  const [profilingHandoff, setProfilingHandoff] = useState<ProfilingHandoff | null>(null);
+  const [requestedVolatility, setRequestedVolatility] = useState<number | null>(null);
   const [educationalSimulation, setEducationalSimulation] = useState(false);
   const [stage, setStage] = useState<InsightStage>("diagnostico");
   const [signals, setSignals] = useState<InteractionSignals>({
-    aiQuestions: 0,
     volatilityChanges: 0,
     goalSimulations: 0,
   });
@@ -68,11 +64,7 @@ export function useInsightsFlow() {
   }, [profile, requestedVolatility, educationalSimulation]);
 
   const escalationOrigin: EscalationOrigin =
-    stage === "stress_test"
-      ? "stress_test"
-      : stage === "ia_financeira" || signals.aiQuestions > 0
-        ? "ia_financeira"
-        : "diagnostico";
+    stage === "stress_test" ? "stress_test" : "diagnostico";
 
   const analysis = useMemo(() => {
     if (!profile || !portfolio) return null;
@@ -90,11 +82,6 @@ export function useInsightsFlow() {
     stages: INSIGHT_STAGES,
     setStage,
     signals,
-    registerAiQuestion: () =>
-      setSignals((current) => ({
-        ...current,
-        aiQuestions: current.aiQuestions + 1,
-      })),
     goNext: () => {
       const next = INSIGHT_STAGES[stageIndex + 1];
       if (next) setStage(next);

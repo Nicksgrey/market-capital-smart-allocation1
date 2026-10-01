@@ -79,12 +79,7 @@ export type StressScenarioId =
   | "cenarios_geopoliticos";
 
 /** Comportamento esperado, em linguagem de setas (uso educacional). */
-export type StressDirection =
-  | "forte_queda"
-  | "queda"
-  | "neutro"
-  | "alta"
-  | "forte_alta";
+export type StressDirection = "forte_queda" | "queda" | "neutro" | "alta" | "forte_alta";
 
 export const STRESS_DIRECTION_ARROW: Record<StressDirection, string> = {
   forte_queda: "▼▼▼",
@@ -152,10 +147,7 @@ export interface StressTestReport {
 
 /** Ações do módulo "Próximos Passos". */
 export type NextStepAction =
-  | "revisar_carteira"
-  | "alterar_volatilidade"
-  | "gerar_outra_estrategia"
-  | "analise_personalizada";
+  "revisar_carteira" | "alterar_volatilidade" | "gerar_outra_estrategia" | "analise_personalizada";
 
 export interface NextStep {
   action: NextStepAction;
@@ -172,7 +164,6 @@ export type EscalationTriggerId =
   | "geracao_de_renda"
   | "aposentadoria"
   | "investimentos_internacionais"
-  | "duvidas_recorrentes"
   | "indecisao_de_volatilidade"
   | "multiplas_simulacoes"
   | "carteira_sofisticada"
@@ -185,7 +176,7 @@ export interface EscalationTrigger {
 }
 
 /** Origem da sugestão contextual (define a mensagem oficial exibida). */
-export type EscalationOrigin = "diagnostico" | "ia_financeira" | "stress_test";
+export type EscalationOrigin = "diagnostico" | "stress_test";
 
 export interface EscalationSuggestion {
   origin: EscalationOrigin;
@@ -195,15 +186,13 @@ export interface EscalationSuggestion {
   triggers: EscalationTrigger[];
 }
 
-/** Sinais de interação usados pelos gatilhos. */
+/** Sinais de interação usados pelos gatilhos dos módulos ativos. */
 export interface InteractionSignals {
-  aiQuestions: number;
   volatilityChanges: number;
   goalSimulations: number;
 }
 
 export const EMPTY_INTERACTION_SIGNALS: InteractionSignals = {
-  aiQuestions: 0,
   volatilityChanges: 0,
   goalSimulations: 0,
 };
@@ -217,23 +206,13 @@ export interface PostAllocationAnalysis {
 }
 
 /** Etapas apresentadas na Camada 4, na ordem oficial. */
-export type InsightStage =
-  | "diagnostico"
-  | "stress_test"
-  | "ia_financeira"
-  | "proximos_passos";
+export type InsightStage = "diagnostico" | "stress_test" | "proximos_passos";
 
-export const INSIGHT_STAGES: InsightStage[] = [
-  "diagnostico",
-  "stress_test",
-  "ia_financeira",
-  "proximos_passos",
-];
+export const INSIGHT_STAGES: InsightStage[] = ["diagnostico", "stress_test", "proximos_passos"];
 
 export const INSIGHT_STAGE_LABEL: Record<InsightStage, string> = {
   diagnostico: "Diagnóstico Inteligente",
   stress_test: "Stress Test",
-  ia_financeira: "IA Financeira",
   proximos_passos: "Próximos Passos",
 };
 

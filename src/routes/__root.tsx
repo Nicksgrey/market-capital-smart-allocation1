@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -35,12 +36,14 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
+
+  const errorMessage = error instanceof Error ? error.message : "Unexpected application error";
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -51,6 +54,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
+        <span className="sr-only">{errorMessage}</span>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -81,15 +85,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Motor Inteligente de Alocação Patrimonial | Market Capital" },
       {
         name: "description",
-        content:
-          "Plataforma da Market Capital para alocação patrimonial inteligente.",
+        content: "Plataforma da Market Capital para alocação patrimonial inteligente.",
       },
       { name: "author", content: "Market Capital" },
       { property: "og:title", content: "Motor Inteligente de Alocação Patrimonial" },
       {
         property: "og:description",
-        content:
-          "Plataforma da Market Capital para alocação patrimonial inteligente.",
+        content: "Plataforma da Market Capital para alocação patrimonial inteligente.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
